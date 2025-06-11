@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kenneth's Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-light: #f4f4f4;
+            --primary: #6c63ff;
+            --accent: #a64ca6;
+            --text-light: #ffffff;
+            --text-dark: #1e1e1e;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        header {
+            background: linear-gradient(145deg, var(--accent), var(--primary));
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin: 0.5rem 0;
+        }
+
+        header h2 {
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .quote {
+            background: #2c2c2c;
+            color: #fff;
+            padding: 2rem;
+            font-style: italic;
+            text-align: center;
+            margin: 2rem auto;
+            border-left: 4px solid var(--primary);
+        }
+
+        section {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            padding: 2rem;
+            margin: 2rem auto;
+            border-radius: 10px;
+            max-width: 1100px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        section h2 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 1rem;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .project:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .project img {
+            max-width: 100%;
+            border-radius: 6px;
+        }
+
+        footer {
+            text-align: center;
+            background-color: var(--accent);
+            color: white;
+            padding: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background-color: #1e1e1e;
+            color: #f4f4f4;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            padding-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .project-card h3 {
+            margin: 1rem;
+            font-size: 1.25rem;
+            color: #6c63ff;
+        }
+
+        .project-card p {
+            margin: 0 1rem 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .project-card a {
+            margin: 0 1rem;
+            color: #a64ca6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .project-card a:hover {
+            text-decoration: underline;
+        }
+
+        .experience {
+            margin-top: 3rem;
+            background-color: #f4f4f4;
+            color: #1e1e1e;
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .experience h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #6c63ff;
+        }
+
+        .job {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .job h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job span {
+            font-weight: 600;
+            color: #915ac1;
+        }
+
+        .job .date {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .job ul {
+            list-style: disc;
+            padding-left: 1.5rem;
+        }
+
+        .job ul li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .education {
+            background-color: #f4f4f4;
+            color: #1e1e1e;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 3rem;
+        }
+
+        .education h2 {
+            text-align: center;
+            color: #6c63ff;
+            margin-bottom: 2rem;
+        }
+
+        .edu-block {
+            margin-bottom: 2rem;
+        }
+
+        .edu-block h3 {
+            color: #915ac1;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .edu-block ul {
+            list-style-type: square;
+            padding-left: 1.5rem;
+        }
+
+        .edu-block li {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .contact {
+            background-color: #121212;
+            padding: 3rem 1rem;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 3rem;
+        }
+
+        .contact h2 {
+            color: #6c63ff;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .contact-icon-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            color: #a64ca6;
+            text-decoration: none;
+            background-color: #1f1f1f;
+            padding: 1rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .contact-icon:hover {
+            background-color: #6c63ff;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Kenneth's Portfolio</h1>
+        <h2>Adaptable &#183; Creative &#183; Innovative</h2>
+    </header>
+
+    <section class="quote">
+        <p>"Everybody is a genius. But if you judge a fish by its ability to climb a tree, it will live its whole life
+            believing that it is stupid." <br />– Albert Einstein</p>
+    </section>
+
+    <section class="aboutme">
+        <h2 data-aos="fade-up">About Me</h2>
+
+        <p data-aos="fade-up" data-aos-delay="100">
+            I'm a lifelong learner with a strong passion for technology. I served over seven years in the U.S. Marine
+            Corps, leading aviation maintenance on F/A-18 and F-35 jets while holding a top-secret clearance. My
+            leadership earned me two Navy and Marine Corps Achievement Medals and several commendations.
+        </p>
+
+        <p data-aos="fade-up" data-aos-delay="200">
+            After the military, I managed multiple commercial construction sites while pursuing an engineering degree.
+            It was during this time that I discovered my love for programming and began teaching myself C/C++, Python,
+            HTML, and CSS.
+        </p>
+
+        <p data-aos="fade-up" data-aos-delay="300">
+            That passion led me to study Software Engineering with a focus on JavaScript and web development. I
+            currently serve as a Network Engineer at Citigroup, with a focus on change management and network
+            automation, helping maintain global network infrastructure. My current focus is on expanding my
+            understanding of network security and automation.
+        </p>
+    </section>
+
+
+    <section class="projects" id="projects">
+        <h2 data-aos="fade-up">Projects</h2>
+        <div class="project-grid">
+            <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                <img src="HelloKitchen.png" alt="Hello Kitchen">
+                <h3>Hello Kitchen</h3>
+                <p>Helps users plan meals and purchase ingredients. Features React, Redux, Sequelize, and Amazon Fresh
+                    integration.</p>|
+                <a href="https://github.com/Team-Rowlf/Rowlf" target="_blank">View Repo</a>
+            </div>
+
+            <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+                <img src="GraceAdopter.png" alt="Grace Adopter">
+                <h3>Grace Adopter</h3>
+                <p>A pet adoption mock site built with React and PostgreSQL. Developed in one week to showcase Git and
+                    teamwork skills.</p>
+                <a href="https://github.com/team-johnny-bravo/grace-adopter" target="_blank">View Repo</a>
+            </div>
+
+            <div class="project-card" data-aos="fade-up" data-aos-delay="400">
+                <img src="Automation.png" alt="Python Web Automation">
+                <h3>Python Web Automation</h3>
+                <p>Exec tool using Python for auto-login and report generation. Not public due to sensitive data, but
+                    showcases automation skill.</p>
+            </div>
+
+            <div class="project-card" data-aos="fade-up" data-aos-delay="500">
+                <img src="WFSS.png" alt="WF Self Storage">
+                <h3>WF Self Storage</h3>
+                <p>Client-facing full stack SPA built with React and PostgreSQL. Live and customized per business
+                    requirements.</p>
+                <a href="https://wfss-website.herokuapp.com/" target="_blank">View Site</a>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="experience" id="experience">
+        <h2 data-aos="fade-up">Experience</h2>
+
+        <!-- Citi -->
+        <div class="job" data-aos="fade-up" data-aos-delay="100">
+            <h3>Citi — <span>Enterprise Operations and Technology Analyst</span></h3>
+            <p class="date">June 2023 – Present</p>
+            <ul>
+                <li>Collaborated with 100+ global IT support teams using ServiceNow to detect, document, and resolve
+                    persistent network issues across the international network.</li>
+                <li>Engineered web-based automation tools for global deployment, reducing daily workload by over 5% for
+                    team analysts.</li>
+                <li>Provided technical support for Citi’s global infrastructure, resolving network and infrastructure
+                    issues.</li>
+            </ul>
+        </div>
+
+        <!-- edX -->
+        <div class="job" data-aos="fade-up" data-aos-delay="200">
+            <h3>edX — <span>Full Stack Software Engineering Bootcamp Instructor</span></h3>
+            <p class="date">February 2023 – Present</p>
+            <ul>
+                <li>Mentored students on full-stack development and guided project construction with personalized
+                    feedback.</li>
+                <li>Led sessions of up to 60 participants on frontend, backend, databases, and deployment fundamentals.
+                </li>
+                <li>Encouraged collaboration and communication through real-world group projects and peer reviews.</li>
+            </ul>
+        </div>
+
+        <!-- Donald Jones Consulting -->
+        <div class="job" data-aos="fade-up" data-aos-delay="300">
+            <h3>Donald Jones Consulting — <span>General Manager / IT Consultant</span></h3>
+            <p class="date">September 2021 – June 2023</p>
+            <ul>
+                <li>Enhanced end-to-end service processes and developed secure information systems.</li>
+                <li>Created Python automation software, reducing paperwork by 45%.</li>
+                <li>Boosted efficiency by 32% and facility usage by 200% through full-stack solutions and strategic
+                    planning.</li>
+            </ul>
+        </div>
+
+        <!-- Trinity Executive Services -->
+        <div class="job" data-aos="fade-up" data-aos-delay="400">
+            <h3>Trinity Executive Services — <span>Hospital Security Officer</span></h3>
+            <p class="date">February 2020 – November 2020</p>
+            <ul>
+                <li>Implemented HIPAA and Joint Commission-compliant security protocols.</li>
+                <li>Managed information security systems and performance evaluations.</li>
+                <li>Reduced altercations by 28% using de-escalation techniques during the pandemic.</li>
+            </ul>
+        </div>
+
+        <!-- G3 Construction -->
+        <div class="job" data-aos="fade-up" data-aos-delay="500">
+            <h3>G3 Construction, Inc. — <span>Lead Commercial Foreman</span></h3>
+            <p class="date">January 2018 – January 2020</p>
+            <ul>
+                <li>Directed project staffing, scheduling, and task management for commercial builds.</li>
+                <li>Supervised diverse trade teams across multiple job sites.</li>
+                <li>Negotiated contracts and ensured compliance with regulations.</li>
+            </ul>
+        </div>
+
+        <!-- USMC -->
+        <div class="job" data-aos="fade-up" data-aos-delay="600">
+            <h3>United States Marine Corps — <span>Sergeant / Division Lead</span></h3>
+            <p class="date">December 2010 – January 2018</p>
+            <ul>
+                <li>Led maintenance teams of up to 60 Marines for F/A-18 and F-35 aircraft.</li>
+                <li>Awarded two Navy/Marine Corps Achievement Medals for leadership and dedication.</li>
+                <li>Developed solutions to complex aircraft issues in collaboration with engineers and trained
+                    maintenance staff.</li>
+            </ul>
+        </div>
+
+    </section>
+
+
+    <section class="education" id="education">
+        <h2 data-aos="fade-up">Education & Training</h2>
+
+        <div class="edu-block" data-aos="fade-up" data-aos-delay="100">
+            <h3>Degrees & Formal Training</h3>
+            <ul>
+                <li><strong>B.S. Network Engineering and Security</strong> – Western Governors University, 2026</li>
+                <li><strong>A.S. Engineering</strong> – Embry-Riddle Aeronautical University, 2023</li>
+                <li><strong>Full Stack Software Engineer</strong> – Fullstack Academy, 2022</li>
+            </ul>
+        </div>
+
+        <div class="edu-block" data-aos="fade-up" data-aos-delay="200">
+            <h3>Certifications</h3>
+            <ul>
+                <li><strong>Linux Essentials</strong> – LPI, 2024</li>
+                <li><strong>ITILv4</strong> – Axelos, 2024</li>
+                <li><strong>CompTIA A+</strong> – 2024</li>
+                <li><strong>CompTIA ITF+</strong> – 2023</li>
+            </ul>
+        </div>
+    </section>
+
+
+    <section class="contact" id="contact">
+        <h2 data-aos="fade-up">Get In Touch</h2>
+
+        <div class="contact-icon-row">
+            <a href="tel:+13173612543" class="contact-icon" aria-label="Call Phone" data-aos="zoom-in"
+                data-aos-delay="100">
+                <i class="fas fa-phone-alt"></i>
+            </a>
+
+            <a href="mailto:parzidog@icloud.com" class="contact-icon" aria-label="Send Email" data-aos="zoom-in"
+                data-aos-delay="150">
+                <i class="fas fa-envelope"></i>
+            </a>
+
+            <a href="https://github.com/parzidog" class="contact-icon" aria-label="GitHub Profile" target="_blank"
+                data-aos="zoom-in" data-aos-delay="200">
+                <i class="fab fa-github"></i>
+            </a>
+
+            <a href="https://linkedin.com/in/parzidog" class="contact-icon" aria-label="LinkedIn Profile"
+                target="_blank" data-aos="zoom-in" data-aos-delay="250">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </div>
+    </section>
+
+
+    <footer>
+        <p>&copy; 2025 Kenneth. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+
+</body>
+
+</html>
