@@ -1,517 +1,887 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Kenneth's Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- AOS Animation Library -->
-    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
+    <!-- Fonts & Icons -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
     <style>
-        :root {
-            --bg-dark: #121212;
-            --bg-light: #f4f4f4;
-            --primary: #6c63ff;
-            --accent: #a64ca6;
-            --text-light: #ffffff;
-            --text-dark: #1e1e1e;
-        }
+      /* ========= Design Tokens ========= */
+      :root {
+        --bg: #0f1115;
+        --surface: #151923;
+        --surface-2: #1b2030;
+        --text: #e6e8ef;
+        --muted: #a7b0c0;
 
+        --brand: #7c6cff; /* primary */
+        --brand-2: #a64ca6; /* accent */
+        --brand-grad: linear-gradient(135deg, var(--brand) 0%, #4aa6ff 100%);
+
+        --radius-sm: 10px;
+        --radius-md: 14px;
+        --radius-lg: 20px;
+
+        --shadow-1: 0 6px 18px rgba(0, 0, 0, 0.25);
+        --shadow-2: 0 12px 32px rgba(0, 0, 0, 0.35);
+        --ring: 0 0 0 3px rgba(124, 108, 255, 0.35);
+
+        --container: 1120px;
+        --space-1: 0.5rem;
+        --space-2: 0.75rem;
+        --space-3: 1rem;
+        --space-4: 1.5rem;
+        --space-5: 2rem;
+        --space-6: 3rem;
+      }
+
+      :root.light {
+        --bg: #f7f8fc;
+        --surface: #ffffff;
+        --surface-2: #f2f4f8;
+        --text: #121420;
+        --muted: #5c6579;
+        --shadow-1: 0 10px 24px rgba(17, 23, 39, 0.08);
+        --shadow-2: 0 18px 40px rgba(17, 23, 39, 0.12);
+        --ring: 0 0 0 3px rgba(124, 108, 255, 0.25);
+      }
+
+      /* ========= Base ========= */
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: radial-gradient(
+            1200px 800px at 80% -50%,
+            rgba(124, 108, 255, 0.14),
+            transparent 60%
+          ),
+          radial-gradient(900px 700px at -20% 30%, rgba(166, 76, 166, 0.14), transparent 60%),
+          var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .container {
+        width: min(100% - 2rem, var(--container));
+        margin-inline: auto;
+      }
+
+      /* ========= Accessible focus ========= */
+      :where(a, button, [role='button'], .chip, .btn):focus-visible {
+        outline: none;
+        box-shadow: var(--ring);
+        border-radius: 10px;
+      }
+
+      /* ========= Announcement Banner ========= */
+      .announce {
+        position: sticky;
+        top: 0;
+        z-index: 110;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        min-height: 44px;
+        padding: 0.5rem 1rem;
+        color: white;
+        background: conic-gradient(from 180deg, #7c6cff, #4aa6ff, #62e0d6, #a64ca6, #7c6cff);
+        background-size: 200% 200%;
+        animation: hueShift 12s linear infinite;
+      }
+      .announce .inner {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: color-mix(in oklab, #000 15%, rgba(255, 255, 255, 0.08));
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        font-weight: 600;
+      }
+      .announce .btn-small {
+        background: #10131b;
+        color: #fff;
+        text-decoration: none;
+        padding: 0.35rem 0.6rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+      }
+      .announce button.close {
+        background: transparent;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0.25rem 0.4rem;
+        border-radius: 8px;
+      }
+
+      @keyframes hueShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      /* ========= Top Nav ========= */
+      .nav {
+        position: sticky;
+        top: 44px; /* sits below banner */
+        z-index: 100;
+        backdrop-filter: saturate(150%) blur(10px);
+        background: color-mix(in oklab, var(--bg) 80%, transparent);
+        border-bottom: 1px solid color-mix(in oklab, var(--text) 12%, transparent);
+      }
+      .nav .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+      }
+      .brand .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--brand-grad);
+        box-shadow: 0 0 0 6px rgba(124, 108, 255, 0.15);
+      }
+      .nav a {
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 600;
+        opacity: 0.85;
+      }
+      .nav ul {
+        display: flex;
+        gap: 1rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .nav a:hover {
+        opacity: 1;
+      }
+
+      /* ========= Hero ========= */
+      header.hero {
+        position: relative;
+        padding: clamp(4rem, 10vw, 8rem) 0 clamp(2rem, 6vw, 4rem);
+        text-align: center;
+        overflow: clip;
+        isolation: isolate;
+      }
+      /* colorful blobs */
+      .hero::before,
+      .hero::after {
+        content: '';
+        position: absolute;
+        inset: -20% -10% auto -10%;
+        height: 60%;
+        z-index: -1;
+        filter: blur(60px);
+        opacity: 0.55;
+        background: radial-gradient(
+            40% 50% at 20% 30%,
+            rgba(124, 108, 255, 0.35) 0,
+            transparent 70%
+          ),
+          radial-gradient(30% 40% at 70% 30%, rgba(166, 76, 166, 0.35) 0, transparent 70%),
+          radial-gradient(25% 35% at 50% 70%, rgba(74, 166, 255, 0.35) 0, transparent 70%);
+        transform: translateY(-10%);
+      }
+      .hero::after {
+        inset: auto -10% -30% -10%;
+        height: 50%;
+        transform: translateY(10%);
+        background: radial-gradient(40% 55% at 20% 20%, rgba(98, 224, 214, 0.25) 0, transparent 70%),
+          radial-gradient(35% 45% at 80% 60%, rgba(166, 76, 166, 0.25) 0, transparent 70%);
+      }
+      .hero h1 {
+        margin: 0 0 0.4rem;
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        letter-spacing: 0.2px;
+      }
+      .gradient-text {
+        background: conic-gradient(from 180deg, #7c6cff, #4aa6ff, #62e0d6, #a64ca6, #7c6cff);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: hueShift 12s linear infinite;
+      }
+      .hero p.kicker {
+        margin: 0 auto 1.25rem;
+        max-width: 48ch;
+        color: var(--muted);
+        font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+      }
+      .hero .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: color-mix(in oklab, var(--surface) 85%, transparent);
+        border: 1px solid color-mix(in oklab, var(--text) 12%, transparent);
+        padding: 0.5rem 0.8rem;
+        border-radius: 999px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      /* ========= Sections ========= */
+      section {
+        scroll-margin-top: 110px;
+        padding: var(--space-6) 0;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-1);
+        padding: clamp(1.25rem, 2.5vw, 1.75rem);
+      }
+
+      .section-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+        color: var(--text);
+        margin: 0 0 1.25rem;
+        position: relative;
+      }
+      .section-title::after {
+        content: '';
+        height: 2px;
+        width: 64px;
+        background: var(--brand-grad);
+        border-radius: 2px;
+        position: relative;
+        top: 0;
+      }
+
+      /* ========= Quote ========= */
+      .quote {
+        background: var(--surface-2);
+        border: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+        color: var(--text);
+        font-style: italic;
+        text-align: center;
+        margin: var(--space-5) 0;
+        padding: var(--space-5);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-1);
+      }
+      .quote span {
+        display: block;
+        margin-top: 0.75rem;
+        color: var(--muted);
+        font-style: normal;
+      }
+
+      /* ========= Grid utilities ========= */
+      .grid {
+        display: grid;
+        gap: clamp(1rem, 2.5vw, 1.5rem);
+      }
+      .grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      @media (max-width: 960px) {
+        .grid-3 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 640px) {
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ========= Project Cards ========= */
+      .project-card {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: var(--surface);
+        border-radius: var(--radius-md);
+        border: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      }
+      .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-2);
+        border-color: color-mix(in oklab, var(--brand) 40%, transparent);
+      }
+      .project-card img {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        background: #111;
+      }
+      .project-card .body {
+        padding: 1rem 1rem 1.1rem;
+      }
+      .project-card h3 {
+        margin: 0 0 0.35rem;
+        font-size: 1.1rem;
+        color: var(--text);
+      }
+      .project-card p {
+        margin: 0 0 0.9rem;
+        color: var(--muted);
+      }
+      .actions {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        text-decoration: none;
+        background: color-mix(in oklab, var(--brand) 10%, var(--surface));
+        color: var(--text);
+        border: 1px solid color-mix(in oklab, var(--brand) 35%, transparent);
+        padding: 0.55rem 0.8rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+      }
+      .btn:hover {
+        background: var(--brand-grad);
+        border-color: transparent;
+        transform: translateY(-1px);
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        color: var(--muted);
+        background: color-mix(in oklab, var(--surface-2) 85%, transparent);
+        border: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+      }
+
+      /* ========= Experience / Education ========= */
+      .timeline {
+        display: grid;
+        gap: 1.25rem;
+      }
+      .job,
+      .edu-block {
+        background: var(--surface);
+        border: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+        border-radius: var(--radius-md);
+        padding: 1rem 1.1rem;
+      }
+      .job h3,
+      .edu-block h3 {
+        margin: 0 0 0.25rem;
+        font-size: 1.05rem;
+      }
+      .job h3 span {
+        color: color-mix(in oklab, var(--brand-2) 65%, var(--text));
+      }
+      .date {
+        color: var(--muted);
+        font-weight: 600;
+        margin: 0 0 0.5rem;
+      }
+      .job ul,
+      .edu-block ul {
+        margin: 0;
+        padding-left: 1.1rem;
+      }
+      .job li,
+      .edu-block li {
+        margin: 0.4rem 0;
+        color: var(--muted);
+      }
+
+      /* ========= Contact ========= */
+      .contact-card {
+        text-align: center;
+        background: var(--surface-2);
+        border: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-1);
+        padding: var(--space-6);
+      }
+      .contact-icons {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .contact-icon {
+        display: inline-grid;
+        place-items: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        color: var(--text);
+        background: color-mix(in oklab, var(--brand) 10%, var(--surface));
+        border: 1px solid color-mix(in oklab, var(--brand) 35%, transparent);
+        font-size: 1.25rem;
+        box-shadow: var(--shadow-1);
+        transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+      }
+      .contact-icon:hover {
+        transform: translateY(-2px);
+        background: var(--brand-grad);
+        border-color: transparent;
+      }
+
+      /* ========= Footer ========= */
+      footer {
+        text-align: center;
+        color: var(--muted);
+        padding: 2rem 0 3rem;
+      }
+
+      /* ========= Theme Toggle ========= */
+      .theme-toggle {
+        border: 1px solid color-mix(in oklab, var(--text) 12%, transparent);
+        background: color-mix(in oklab, var(--surface) 85%, transparent);
+        padding: 0.45rem 0.6rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--muted);
+        cursor: pointer;
+        user-select: none;
+      }
+
+      /* ========= Motion Preferences ========= */
+      @media (prefers-reduced-motion: reduce) {
         * {
-            box-sizing: border-box;
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          scroll-behavior: auto !important;
         }
-
-        body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-        }
-
-        header {
-            background: linear-gradient(145deg, var(--accent), var(--primary));
-            text-align: center;
-            padding: 4rem 1rem;
-        }
-
-        header h1 {
-            font-size: 3rem;
-            margin: 0.5rem 0;
-        }
-
-        header h2 {
-            font-weight: 400;
-            opacity: 0.9;
-        }
-
-        .quote {
-            background: #2c2c2c;
-            color: #fff;
-            padding: 2rem;
-            font-style: italic;
-            text-align: center;
-            margin: 2rem auto;
-            border-left: 4px solid var(--primary);
-        }
-
-        section {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            padding: 2rem;
-            margin: 2rem auto;
-            border-radius: 10px;
-            max-width: 1100px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        section h2 {
-            margin-top: 0;
-            color: var(--accent);
-        }
-
-        .projects {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .project {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            padding: 1rem;
-            border-radius: 8px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .project:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .project img {
-            max-width: 100%;
-            border-radius: 6px;
-        }
-
-        footer {
-            text-align: center;
-            background-color: var(--accent);
-            color: white;
-            padding: 1.5rem;
-            margin-top: 4rem;
-        }
-
-        a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .project-card {
-            background-color: #1e1e1e;
-            color: #f4f4f4;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-            padding-bottom: 1rem;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .project-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-        }
-
-        .project-card img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .project-card h3 {
-            margin: 1rem;
-            font-size: 1.25rem;
-            color: #6c63ff;
-        }
-
-        .project-card p {
-            margin: 0 1rem 1rem;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .project-card a {
-            margin: 0 1rem;
-            color: #a64ca6;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .project-card a:hover {
-            text-decoration: underline;
-        }
-
-        .experience {
-            margin-top: 3rem;
-            background-color: #f4f4f4;
-            color: #1e1e1e;
-            padding: 2rem;
-            border-radius: 10px;
-        }
-
-        .experience h2 {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: #6c63ff;
-        }
-
-        .job {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .job h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .job span {
-            font-weight: 600;
-            color: #915ac1;
-        }
-
-        .job .date {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #666;
-            margin-bottom: 0.5rem;
-        }
-
-        .job ul {
-            list-style: disc;
-            padding-left: 1.5rem;
-        }
-
-        .job ul li {
-            margin-bottom: 0.5rem;
-            line-height: 1.5;
-        }
-
-        .education {
-            background-color: #f4f4f4;
-            color: #1e1e1e;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-top: 3rem;
-        }
-
-        .education h2 {
-            text-align: center;
-            color: #6c63ff;
-            margin-bottom: 2rem;
-        }
-
-        .edu-block {
-            margin-bottom: 2rem;
-        }
-
-        .edu-block h3 {
-            color: #915ac1;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .edu-block ul {
-            list-style-type: square;
-            padding-left: 1.5rem;
-        }
-
-        .edu-block li {
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-
-        .contact {
-            background-color: #121212;
-            padding: 3rem 1rem;
-            text-align: center;
-            border-radius: 10px;
-            margin-top: 3rem;
-        }
-
-        .contact h2 {
-            color: #6c63ff;
-            margin-bottom: 2rem;
-            font-size: 2rem;
-        }
-
-        .contact-icon-row {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-
-        .contact-icon {
-            font-size: 2rem;
-            color: #a64ca6;
-            text-decoration: none;
-            background-color: #1f1f1f;
-            padding: 1rem;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .contact-icon:hover {
-            background-color: #6c63ff;
-            color: #fff;
-            transform: scale(1.1);
-        }
-
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
+  <body>
+    <!-- ====== ANNOUNCEMENT BANNER ====== -->
+    <div class="announce" id="announce" role="region" aria-label="Site announcement">
+      <span class="inner">
+        <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+        <span>Now exploring roles in Network Automation & Full-Stack!</span>
+        <a class="btn-small" href="#contact">Say hello</a>
+      </span>
+      <button class="close" id="announceClose" aria-label="Dismiss announcement">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
 
-<body>
+    <!-- ====== NAV ====== -->
+    <nav class="nav">
+      <div class="container row">
+        <a href="#" class="brand"> <span class="dot"></span> Kenneth Schaefer </a>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#education">Education</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li>
+            <button id="themeBtn" class="theme-toggle" aria-label="Toggle theme" type="button">
+              <i class="fa-solid fa-moon"></i><span>Theme</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
-    <header>
-        <h1>Kenneth Schaefer</h1>
-        <h2>Adaptable &#183; Creative &#183; Innovative</h2>
+    <!-- ====== HERO ====== -->
+    <header class="hero" id="top">
+      <div class="container">
+        <div class="pill" data-aos="zoom-in">
+          <i class="fa-solid fa-bolt"></i> Adaptable • Creative • Innovative
+        </div>
+        <h1 class="gradient-text" data-aos="fade-up" data-aos-delay="80">Kenneth Schaefer</h1>
+        <p class="kicker" data-aos="fade-up" data-aos-delay="130">
+          Network Engineer & Software Generalist — building reliable infrastructure and thoughtful
+          web experiences.
+        </p>
+      </div>
     </header>
 
-    <section class="quote">
-        <p>"Everybody is a genius. But if you judge a fish by its ability to climb a tree, it will live its whole life
-            believing that it is stupid." <br />– Albert Einstein</p>
+    <!-- ====== QUOTE ====== -->
+    <section class="container">
+      <blockquote class="quote" data-aos="fade-up">
+        “Everybody is a genius. But if you judge a fish by its ability to climb a tree, it will live
+        its whole life believing that it is stupid.”
+        <span>— Albert Einstein</span>
+      </blockquote>
     </section>
 
-    <section class="aboutme">
-        <h2 data-aos="fade-up">About Me</h2>
-
-        <p data-aos="fade-up" data-aos-delay="100">
-            I'm a lifelong learner with a strong passion for technology. I served over seven years in the U.S. Marine
-            Corps, leading aviation maintenance on F/A-18 and F-35 jets while holding a top-secret clearance. My
-            leadership earned me two Navy and Marine Corps Achievement Medals and several commendations.
-        </p>
-
-        <p data-aos="fade-up" data-aos-delay="200">
-            After the military, I managed multiple commercial construction sites while pursuing an engineering degree.
-            It was during this time that I discovered my love for programming and began teaching myself C/C++, Python,
-            HTML, and CSS.
-        </p>
-
-        <p data-aos="fade-up" data-aos-delay="300">
-            That passion led me to study Software Engineering with a focus on JavaScript and web development. I
-            currently serve as a Network Engineer at Citigroup, with a focus on change management and network
-            automation, helping maintain global network infrastructure. My current focus is on expanding my
-            understanding of network security and automation.
-        </p>
-    </section>
-
-
-    <section class="projects" id="projects">
-        <h2 data-aos="fade-up">Projects</h2>
-        <div class="project-grid">
-            <div class="project-card" data-aos="fade-up" data-aos-delay="200">
-                <img src="hellokitchen.webp" alt="Hello Kitchen">
-                <h3>Hello Kitchen</h3>
-                <p>Helps users plan meals and purchase ingredients. Features React, Redux, Sequelize, and Amazon Fresh
-                    integration.</p>|
-                <a href="https://github.com/Team-Rowlf/Rowlf" target="_blank">View Repo</a>
-            </div>
-
-            <div class="project-card" data-aos="fade-up" data-aos-delay="300">
-                <img src="graceadopter.webp" alt="Grace Adopter">
-                <h3>Grace Adopter</h3>
-                <p>A pet adoption mock site built with React and PostgreSQL. Developed in one week to showcase Git and
-                    teamwork skills.</p>
-                <a href="https://github.com/team-johnny-bravo/grace-adopter" target="_blank">View Repo</a>
-            </div>
-
-            <div class="project-card" data-aos="fade-up" data-aos-delay="400">
-                <img src="automation.webp" alt="Python Web Automation">
-                <h3>Python Web Automation</h3>
-                <p>Exec tool using Python for auto-login and report generation. Not public due to sensitive data, but
-                    showcases automation skill.</p>
-            </div>
-
-            <div class="project-card" data-aos="fade-up" data-aos-delay="500">
-                <img src="wfss.webp" alt="WF Self Storage">
-                <h3>WF Self Storage</h3>
-                <p>Client-facing full stack SPA built with React and PostgreSQL. Live and customized per business
-                    requirements.</p>
-                <a href="https://wfss-website.herokuapp.com/" target="_blank">View Site</a>
-            </div>
+    <!-- ====== ABOUT ====== -->
+    <section id="about">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">About Me</h2>
+        <div class="card" data-aos="fade-up" data-aos-delay="100">
+          <p>
+            I'm a lifelong learner with a strong passion for technology. I served over seven years
+            in the U.S. Marine Corps, leading aviation maintenance on F/A-18 and F-35 jets while
+            holding a top-secret clearance. My leadership earned me two Navy and Marine Corps
+            Achievement Medals and several commendations.
+          </p>
+          <p>
+            After the military, I managed multiple commercial construction sites while pursuing an
+            engineering degree. It was during this time that I discovered my love for programming
+            and began teaching myself C/C++, Python, HTML, and CSS.
+          </p>
+          <p>
+            That passion led me to study Software Engineering with a focus on JavaScript and web
+            development. I currently serve as a Network Engineer at Citigroup, with a focus on
+            change management and network automation, helping maintain global network
+            infrastructure. My current focus is on expanding my understanding of network security
+            and automation.
+          </p>
         </div>
+      </div>
     </section>
 
+    <!-- ====== PROJECTS ====== -->
+    <section id="projects">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Projects</h2>
+        <div class="grid grid-3">
+          <!-- Project 1 -->
+          <article class="project-card" data-aos="fade-up" data-aos-delay="100">
+            <img src="hellokitchen.webp" alt="Hello Kitchen app preview" />
+            <div class="body">
+              <h3>Hello Kitchen</h3>
+              <p>
+                Meal planning & ingredient purchasing. Built with React, Redux, Sequelize; features
+                Amazon Fresh integration.
+              </p>
+              <div class="actions">
+                <span class="chip"><i class="fa-brands fa-react"></i> React</span>
+                <span class="chip">Redux</span>
+                <span class="chip">Sequelize</span>
+                <a
+                  class="btn"
+                  href="https://github.com/Team-Rowlf/Rowlf"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <i class="fa-brands fa-github"></i> View Repo
+                </a>
+              </div>
+            </div>
+          </article>
 
-    <section class="experience" id="experience">
-        <h2 data-aos="fade-up">Experience</h2>
+          <!-- Project 2 -->
+          <article class="project-card" data-aos="fade-up" data-aos-delay="150">
+            <img src="graceadopter.webp" alt="Grace Adopter site preview" />
+            <div class="body">
+              <h3>Grace Adopter</h3>
+              <p>
+                Mock pet adoption platform showcasing team workflows. React frontend with PostgreSQL
+                backend.
+              </p>
+              <div class="actions">
+                <span class="chip"><i class="fa-brands fa-react"></i> React</span>
+                <span class="chip">PostgreSQL</span>
+                <a
+                  class="btn"
+                  href="https://github.com/team-johnny-bravo/grace-adopter"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <i class="fa-brands fa-github"></i> View Repo
+                </a>
+              </div>
+            </div>
+          </article>
 
-        <!-- Citi -->
-        <div class="job" data-aos="fade-up" data-aos-delay="100">
+          <!-- Project 3 -->
+          <article class="project-card" data-aos="fade-up" data-aos-delay="200">
+            <img src="automation.webp" alt="Python Web Automation tool concept" />
+            <div class="body">
+              <h3>Python Web Automation</h3>
+              <p>
+                Exec tool for auto-login and report generation (internal only due to sensitive
+                data). Demonstrates automation and scripting capability.
+              </p>
+              <div class="actions">
+                <span class="chip"><i class="fa-brands fa-python"></i> Python</span>
+                <span class="chip">Automation</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 4 -->
+          <article class="project-card" data-aos="fade-up" data-aos-delay="250">
+            <img src="wfss.webp" alt="WF Self Storage SPA preview" />
+            <div class="body">
+              <h3>WF Self Storage</h3>
+              <p>
+                Client-facing full-stack SPA tailored to business needs. React + PostgreSQL;
+                deployed for live use.
+              </p>
+              <div class="actions">
+                <span class="chip"><i class="fa-brands fa-react"></i> React</span>
+                <span class="chip">PostgreSQL</span>
+                <a
+                  class="btn"
+                  href="https://wfss-website.herokuapp.com/"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <i class="fa-solid fa-globe"></i> View Site
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== EXPERIENCE ====== -->
+    <section id="experience">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Experience</h2>
+        <div class="timeline">
+          <div class="job" data-aos="fade-up" data-aos-delay="80">
             <h3>Citi — <span>Enterprise Operations and Technology Analyst</span></h3>
             <p class="date">June 2023 – Present</p>
             <ul>
-                <li>Collaborated with 100+ global IT support teams using ServiceNow to detect, document, and resolve
-                    persistent network issues across the international network.</li>
-                <li>Engineered web-based automation tools for global deployment, reducing daily workload by over 5% for
-                    team analysts.</li>
-                <li>Provided technical support for Citi’s global infrastructure, resolving network and infrastructure
-                    issues.</li>
+              <li>
+                Collaborated with 100+ global IT support teams via ServiceNow to detect, document,
+                and resolve persistent network issues.
+              </li>
+              <li>
+                Engineered web-based automation tools for global deployment, reducing daily workload
+                by 5%+ for analysts.
+              </li>
+              <li>
+                Provided technical support for Citi’s global infrastructure, resolving network and
+                infrastructure issues.
+              </li>
             </ul>
-        </div>
+          </div>
 
-        <!-- edX -->
-        <div class="job" data-aos="fade-up" data-aos-delay="200">
+          <div class="job" data-aos="fade-up" data-aos-delay="120">
             <h3>edX — <span>Full Stack Software Engineering Bootcamp Instructor</span></h3>
             <p class="date">February 2023 – Present</p>
             <ul>
-                <li>Mentored students on full-stack development and guided project construction with personalized
-                    feedback.</li>
-                <li>Led sessions of up to 60 participants on frontend, backend, databases, and deployment fundamentals.
-                </li>
-                <li>Encouraged collaboration and communication through real-world group projects and peer reviews.</li>
+              <li>
+                Mentored students on full-stack development and guided project construction with
+                personalized feedback.
+              </li>
+              <li>
+                Led sessions of up to 60 participants on frontend, backend, databases, and
+                deployment fundamentals.
+              </li>
+              <li>
+                Fostered collaboration and communication through real-world group projects and peer
+                reviews.
+              </li>
             </ul>
-        </div>
+          </div>
 
-        <!-- Donald Jones Consulting -->
-        <div class="job" data-aos="fade-up" data-aos-delay="300">
+          <div class="job" data-aos="fade-up" data-aos-delay="160">
             <h3>Donald Jones Consulting — <span>General Manager / IT Consultant</span></h3>
             <p class="date">September 2021 – June 2023</p>
             <ul>
-                <li>Enhanced end-to-end service processes and developed secure information systems.</li>
-                <li>Created Python automation software, reducing paperwork by 45%.</li>
-                <li>Boosted efficiency by 32% and facility usage by 200% through full-stack solutions and strategic
-                    planning.</li>
+              <li>
+                Enhanced end-to-end service processes and developed secure information systems.
+              </li>
+              <li>Created Python automation software, reducing paperwork by 45%.</li>
+              <li>
+                Increased efficiency by 32% and facility usage by 200% via full-stack solutions and
+                strategic planning.
+              </li>
             </ul>
-        </div>
+          </div>
 
-        <!-- Trinity Executive Services -->
-        <div class="job" data-aos="fade-up" data-aos-delay="400">
+          <div class="job" data-aos="fade-up" data-aos-delay="200">
             <h3>Trinity Executive Services — <span>Hospital Security Officer</span></h3>
             <p class="date">February 2020 – November 2020</p>
             <ul>
-                <li>Implemented HIPAA and Joint Commission-compliant security protocols.</li>
-                <li>Managed information security systems and performance evaluations.</li>
-                <li>Reduced altercations by 28% using de-escalation techniques during the pandemic.</li>
+              <li>Implemented HIPAA and Joint Commission-compliant security protocols.</li>
+              <li>Managed information security systems and performance evaluations.</li>
+              <li>
+                Reduced altercations by 28% using de-escalation techniques during the pandemic.
+              </li>
             </ul>
-        </div>
+          </div>
 
-        <!-- G3 Construction -->
-        <div class="job" data-aos="fade-up" data-aos-delay="500">
+          <div class="job" data-aos="fade-up" data-aos-delay="240">
             <h3>G3 Construction, Inc. — <span>Lead Commercial Foreman</span></h3>
             <p class="date">January 2018 – January 2020</p>
             <ul>
-                <li>Directed project staffing, scheduling, and task management for commercial builds.</li>
-                <li>Supervised diverse trade teams across multiple job sites.</li>
-                <li>Negotiated contracts and ensured compliance with regulations.</li>
+              <li>
+                Directed project staffing, scheduling, and task management for commercial builds.
+              </li>
+              <li>Supervised diverse trade teams across multiple job sites.</li>
+              <li>Negotiated contracts and ensured regulatory compliance.</li>
             </ul>
-        </div>
+          </div>
 
-        <!-- USMC -->
-        <div class="job" data-aos="fade-up" data-aos-delay="600">
+          <div class="job" data-aos="fade-up" data-aos-delay="280">
             <h3>United States Marine Corps — <span>Sergeant / Division Lead</span></h3>
             <p class="date">December 2010 – January 2018</p>
             <ul>
-                <li>Led maintenance teams of up to 60 Marines for F/A-18 and F-35 aircraft.</li>
-                <li>Awarded two Navy/Marine Corps Achievement Medals for leadership and dedication.</li>
-                <li>Developed solutions to complex aircraft issues in collaboration with engineers and trained
-                    maintenance staff.</li>
+              <li>Led maintenance teams of up to 60 Marines for F/A-18 and F-35 aircraft.</li>
+              <li>
+                Awarded two Navy/Marine Corps Achievement Medals for leadership and dedication.
+              </li>
+              <li>
+                Developed solutions to complex aircraft issues in collaboration with engineers;
+                trained maintenance staff.
+              </li>
             </ul>
+          </div>
         </div>
-
+      </div>
     </section>
 
-
-    <section class="education" id="education">
-        <h2 data-aos="fade-up">Education & Training</h2>
-
-        <div class="edu-block" data-aos="fade-up" data-aos-delay="100">
+    <!-- ====== EDUCATION ====== -->
+    <section id="education">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Education & Training</h2>
+        <div class="grid">
+          <div class="edu-block" data-aos="fade-up" data-aos-delay="80">
             <h3>Degrees & Formal Training</h3>
             <ul>
-                <li><strong>B.S. Network Engineering and Security</strong> – Western Governors University, 2026</li>
-                <li><strong>A.S. Engineering</strong> – Embry-Riddle Aeronautical University, 2023</li>
-                <li><strong>Full Stack Software Engineer</strong> – Fullstack Academy, 2022</li>
+              <li>
+                <strong>B.S. Network Engineering and Security</strong> — Western Governors
+                University, 2026
+              </li>
+              <li>
+                <strong>A.S. Engineering</strong> — Embry-Riddle Aeronautical University, 2023
+              </li>
+              <li><strong>Full Stack Software Engineer</strong> — Fullstack Academy, 2022</li>
             </ul>
-        </div>
+          </div>
 
-        <div class="edu-block" data-aos="fade-up" data-aos-delay="200">
+          <div class="edu-block" data-aos="fade-up" data-aos-delay="120">
             <h3>Certifications</h3>
             <ul>
-                <li><strong>Linux Essentials</strong> – LPI, 2024</li>
-                <li><strong>ITILv4</strong> – Axelos, 2024</li>
-                <li><strong>CompTIA A+</strong> – 2024</li>
-                <li><strong>CompTIA ITF+</strong> – 2023</li>
+              <li><strong>Linux Essentials</strong> — LPI, 2024</li>
+              <li><strong>ITILv4</strong> — Axelos, 2024</li>
+              <li><strong>CompTIA A+</strong> — 2024</li>
+              <li><strong>CompTIA ITF+</strong> — 2023</li>
             </ul>
+          </div>
         </div>
+      </div>
     </section>
 
-
-    <section class="contact" id="contact">
-        <h2 data-aos="fade-up">Get In Touch</h2>
-
-        <div class="contact-icon-row">
-            <a href="tel:+13173612543" class="contact-icon" aria-label="Call Phone" data-aos="zoom-in"
-                data-aos-delay="100">
-                <i class="fas fa-phone-alt"></i>
+    <!-- ====== CONTACT ====== -->
+    <section id="contact">
+      <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Get In Touch</h2>
+        <div class="contact-card" data-aos="zoom-in" data-aos-delay="100">
+          <p>Open to roles in network engineering, automation, and full-stack development.</p>
+          <div class="contact-icons">
+            <a href="tel:+13173612543" class="contact-icon" aria-label="Call Kenneth">
+              <i class="fas fa-phone-alt" aria-hidden="true"></i>
             </a>
-
-            <a href="mailto:parzidog@icloud.com" class="contact-icon" aria-label="Send Email" data-aos="zoom-in"
-                data-aos-delay="150">
-                <i class="fas fa-envelope"></i>
+            <a href="mailto:parzidog@icloud.com" class="contact-icon" aria-label="Send Email">
+              <i class="fas fa-envelope" aria-hidden="true"></i>
             </a>
-
-            <a href="https://github.com/parzidog" class="contact-icon" aria-label="GitHub Profile" target="_blank"
-                data-aos="zoom-in" data-aos-delay="200">
-                <i class="fab fa-github"></i>
+            <a
+              href="https://github.com/parzidog"
+              class="contact-icon"
+              target="_blank"
+              rel="noopener"
+              aria-label="GitHub Profile"
+            >
+              <i class="fab fa-github" aria-hidden="true"></i>
             </a>
-
-            <a href="https://linkedin.com/in/parzidog" class="contact-icon" aria-label="LinkedIn Profile"
-                target="_blank" data-aos="zoom-in" data-aos-delay="250">
-                <i class="fab fa-linkedin-in"></i>
+            <a
+              href="https://linkedin.com/in/parzidog"
+              class="contact-icon"
+              target="_blank"
+              rel="noopener"
+              aria-label="LinkedIn Profile"
+            >
+              <i class="fab fa-linkedin-in" aria-hidden="true"></i>
             </a>
+          </div>
         </div>
+      </div>
     </section>
-
 
     <footer>
+      <div class="container">
         <p>&copy; 2025 Kenneth. All rights reserved.</p>
+        <p>
+          <a class="btn" href="#top"><i class="fa-solid fa-arrow-up"></i> Back to top</a>
+        </p>
+      </div>
     </footer>
 
+    <!-- AOS + Theme + Banner Close -->
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        AOS.init({
-            duration: 1000,
-            once: true
-        });
+      AOS.init({ duration: 900, once: true });
+
+      // Theme toggle (remembers choice)
+      const root = document.documentElement;
+      const themeBtn = document.getElementById('themeBtn');
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') root.classList.add('light');
+      themeBtn.addEventListener('click', () => {
+        root.classList.toggle('light');
+        localStorage.setItem('theme', root.classList.contains('light') ? 'light' : 'dark');
+      });
+
+      // Dismissible banner (session)
+      const announce = document.getElementById('announce');
+      const closeBtn = document.getElementById('announceClose');
+      if (sessionStorage.getItem('announceDismissed') === '1') {
+        announce.style.display = 'none';
+        document.querySelector('.nav').style.top = '0px';
+      }
+      closeBtn?.addEventListener('click', () => {
+        announce.style.display = 'none';
+        sessionStorage.setItem('announceDismissed', '1');
+        document.querySelector('.nav').style.top = '0px';
+      });
     </script>
-
-</body>
-
+  </body>
 </html>
