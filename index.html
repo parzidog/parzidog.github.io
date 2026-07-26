@@ -1,857 +1,1739 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Kenneth Schaefer — Network Engineer</title>
-<meta name="description" content="Kenneth Schaefer — Network Engineer & Software Generalist. Infrastructure, automation, full-stack." />
-
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-<style>
-/* ============ Tokens ============ */
-:root {
-  --void: #060310;          /* page background */
-  --ink: #0e0820;           /* raised surface */
-  --line: rgba(180, 122, 255, 0.14);
-  --violet: #8b5cf6;        /* primary */
-  --electric: #b47aff;      /* highlight */
-  --magenta: #d946ef;       /* rare accent */
-  --text: #ece7fa;
-  --muted: #9a8fc0;
-  --glass: rgba(20, 12, 42, 0.55);
-  --radius: 16px;
-  --container: 1100px;
-  --font-display: 'Unbounded', sans-serif;
-  --font-body: 'Sora', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
-
-* { box-sizing: border-box; margin: 0; }
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--void);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-weight: 300;
-  line-height: 1.7;
-  overflow-x: hidden;
-}
-
-/* 3D canvas sits behind everything */
-#bg3d {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  display: block;
-}
-
-.veil {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(6, 3, 16, 0.85) 100%),
-    linear-gradient(180deg, transparent 0%, rgba(6, 3, 16, 0.35) 100%);
-}
-
-main, nav, footer { position: relative; z-index: 2; }
-
-.container {
-  width: min(100% - 2.5rem, var(--container));
-  margin-inline: auto;
-}
-
-::selection { background: rgba(139, 92, 246, 0.4); }
-
-a { color: var(--electric); text-decoration: none; }
-:where(a, button):focus-visible {
-  outline: 2px solid var(--electric);
-  outline-offset: 3px;
-  border-radius: 6px;
-}
-
-/* ============ Scroll progress ============ */
-#progress {
-  position: fixed;
-  top: 0; left: 0;
-  height: 2px;
-  width: 0;
-  z-index: 200;
-  background: linear-gradient(90deg, var(--violet), var(--magenta));
-  box-shadow: 0 0 12px rgba(139, 92, 246, 0.8);
-}
-
-/* ============ Nav ============ */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  background: rgba(6, 3, 16, 0.6);
-  border-bottom: 1px solid var(--line);
-}
-nav .row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.9rem 0;
-}
-.brand {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--text);
-  letter-spacing: 0.05em;
-}
-.brand .prompt { color: var(--electric); }
-.brand .cursor {
-  display: inline-block;
-  width: 8px; height: 1.05em;
-  background: var(--electric);
-  vertical-align: text-bottom;
-  animation: blink 1.1s steps(1) infinite;
-}
-@keyframes blink { 50% { opacity: 0; } }
-
-nav ul {
-  display: flex;
-  gap: 1.6rem;
-  list-style: none;
-  padding: 0;
-}
-nav ul a {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--muted);
-  letter-spacing: 0.06em;
-  transition: color 0.2s;
-}
-nav ul a:hover { color: var(--electric); }
-@media (max-width: 720px) { nav ul { display: none; } }
-
-/* ============ Hero ============ */
-.hero {
-  min-height: 100svh;
-  display: grid;
-  place-content: center;
-  text-align: center;
-  padding: 6rem 0 4rem;
-}
-.hero .status {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--electric);
-  letter-spacing: 0.12em;
-  margin-bottom: 1.4rem;
-}
-.hero .status::before { content: '● '; color: #34d399; }
-.hero h1 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(2.2rem, 7vw, 4.6rem);
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-  background: linear-gradient(120deg, #f3edff 20%, var(--electric) 55%, var(--magenta) 90%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.hero .role {
-  margin-top: 1.2rem;
-  color: var(--muted);
-  font-size: clamp(0.95rem, 2vw, 1.15rem);
-  max-width: 46ch;
-  margin-inline: auto;
-}
-.hero .role strong { color: var(--text); font-weight: 600; }
-.hero .cta {
-  margin-top: 2.4rem;
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  letter-spacing: 0.05em;
-  padding: 0.75rem 1.4rem;
-  border-radius: 10px;
-  border: 1px solid rgba(180, 122, 255, 0.35);
-  color: var(--text);
-  background: rgba(139, 92, 246, 0.12);
-  transition: transform 0.25s, background 0.25s, box-shadow 0.25s;
-}
-.btn:hover {
-  transform: translateY(-2px);
-  background: rgba(139, 92, 246, 0.28);
-  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.35);
-}
-.btn.solid {
-  background: linear-gradient(120deg, var(--violet), #6d28d9);
-  border-color: transparent;
-}
-.scroll-hint {
-  margin-top: 4rem;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--muted);
-  letter-spacing: 0.2em;
-  animation: drift 2.4s ease-in-out infinite;
-}
-@keyframes drift { 50% { transform: translateY(6px); } }
-
-/* ============ Sections ============ */
-section { padding: 6rem 0; scroll-margin-top: 90px; }
-
-.sec-label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--electric);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-.sec-title {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(1.5rem, 3.4vw, 2.2rem);
-  margin: 0.5rem 0 2.2rem;
-}
-
-/* reveal on scroll */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.reveal.in { opacity: 1; transform: none; }
-
-/* ============ About ============ */
-.about-grid {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 2.5rem;
-  align-items: start;
-}
-@media (max-width: 720px) { .about-grid { grid-template-columns: 1fr; } }
-.headshot-wrap {
-  position: relative;
-  border-radius: var(--radius);
-  padding: 3px;
-  background: linear-gradient(140deg, var(--violet), transparent 60%, var(--magenta));
-}
-.headshot-wrap img {
-  display: block;
-  width: 100%;
-  border-radius: 14px;
-  filter: saturate(0.9);
-}
-.about-text p { margin-bottom: 1rem; color: var(--muted); }
-.about-text p strong { color: var(--text); font-weight: 600; }
-
-/* ============ Cards / glass ============ */
-.glass {
-  background: var(--glass);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* ============ Projects ============ */
-.proj-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.4rem;
-}
-@media (max-width: 760px) { .proj-grid { grid-template-columns: 1fr; } }
-
-.proj {
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-.proj:hover {
-  border-color: rgba(180, 122, 255, 0.45);
-  box-shadow: 0 20px 50px rgba(109, 40, 217, 0.35);
-}
-.proj .thumb {
-  aspect-ratio: 16 / 9;
-  background:
-    radial-gradient(80% 120% at 20% 0%, rgba(139, 92, 246, 0.5), transparent 60%),
-    radial-gradient(80% 120% at 90% 100%, rgba(217, 70, 239, 0.35), transparent 60%),
-    #120a28;
-  display: grid;
-  place-items: center;
-}
-.proj .thumb img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-}
-.proj .body { padding: 1.2rem 1.3rem 1.4rem; }
-.proj h3 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.02rem;
-  margin-bottom: 0.5rem;
-}
-.proj p { color: var(--muted); font-size: 0.92rem; margin-bottom: 1rem; }
-.tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.tag {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  color: var(--electric);
-  padding: 0.28rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid rgba(180, 122, 255, 0.3);
-  background: rgba(139, 92, 246, 0.08);
-}
-.tag.link:hover { background: rgba(139, 92, 246, 0.25); }
-
-/* ============ Experience ============ */
-.timeline {
-  position: relative;
-  padding-left: 1.6rem;
-  display: grid;
-  gap: 1.4rem;
-}
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 5px; top: 8px; bottom: 8px;
-  width: 1px;
-  background: linear-gradient(180deg, var(--violet), rgba(139, 92, 246, 0.05));
-}
-.job { position: relative; padding: 1.2rem 1.4rem; }
-.job::before {
-  content: '';
-  position: absolute;
-  left: -1.6rem; top: 1.55rem;
-  width: 11px; height: 11px;
-  border-radius: 50%;
-  background: var(--void);
-  border: 2px solid var(--violet);
-  transform: translateX(-4px);
-  box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
-}
-.job h3 { font-weight: 600; font-size: 1rem; }
-.job h3 span { color: var(--electric); font-weight: 400; }
-.job .date {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--muted);
-  letter-spacing: 0.06em;
-  margin: 0.25rem 0 0.7rem;
-}
-.job ul { padding-left: 1.1rem; color: var(--muted); font-size: 0.92rem; }
-.job li { margin: 0.35rem 0; }
-
-/* ============ Education ============ */
-.edu-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.4rem;
-}
-@media (max-width: 720px) { .edu-grid { grid-template-columns: 1fr; } }
-.edu { padding: 1.4rem 1.5rem; }
-.edu h3 {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--electric);
-  margin-bottom: 0.9rem;
-}
-.edu ul { list-style: none; padding: 0; }
-.edu li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.92rem;
-}
-.edu li:last-child { border-bottom: none; }
-.edu li strong { color: var(--text); font-weight: 600; }
-
-/* ============ Contact ============ */
-.contact-card {
-  text-align: center;
-  padding: 3.5rem 2rem;
-}
-.contact-card p { color: var(--muted); max-width: 44ch; margin: 0 auto 1.8rem; }
-.contact-icons { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-.cicon {
-  display: grid;
-  place-items: center;
-  width: 54px; height: 54px;
-  border-radius: 14px;
-  font-size: 1.15rem;
-  color: var(--text);
-  border: 1px solid rgba(180, 122, 255, 0.3);
-  background: rgba(139, 92, 246, 0.1);
-  transition: transform 0.25s, background 0.25s, box-shadow 0.25s;
-}
-.cicon:hover {
-  transform: translateY(-3px);
-  background: linear-gradient(120deg, var(--violet), #6d28d9);
-  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
-}
-
-footer {
-  text-align: center;
-  padding: 2rem 0 3rem;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-}
-
-/* ============ Reduced motion ============ */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-  .reveal { opacity: 1; transform: none; }
-  #bg3d { display: none; }
-}
-</style>
-</head>
-<body>
-
-<canvas id="bg3d" aria-hidden="true"></canvas>
-<div class="veil" aria-hidden="true"></div>
-<div id="progress" aria-hidden="true"></div>
-
-<nav>
-  <div class="container row">
-    <a href="#top" class="brand"><span class="prompt">kschaefer@net:~$</span> whoami<span class="cursor"></span></a>
-    <ul>
-      <li><a href="#about">/about</a></li>
-      <li><a href="#projects">/projects</a></li>
-      <li><a href="#experience">/experience</a></li>
-      <li><a href="#education">/education</a></li>
-      <li><a href="#contact">/contact</a></li>
-    </ul>
-  </div>
-</nav>
-
-<main id="top">
-  <!-- ============ HERO ============ -->
-  <header class="hero container">
-    <p class="status">OPEN TO ROLES — NETWORK AUTOMATION &amp; FULL-STACK</p>
-    <h1>Kenneth<br />Schaefer</h1>
-    <p class="role">
-      <strong>Network Engineer &amp; Software Generalist</strong> — building reliable
-      infrastructure, automation tooling, and thoughtful web experiences.
-    </p>
-    <div class="cta">
-      <a class="btn solid" href="#projects"><i class="fa-solid fa-cube"></i> view work</a>
-      <a class="btn" href="resume.pdf" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down"></i> resume.pdf</a>
-    </div>
-    <p class="scroll-hint">▼ SCROLL</p>
-  </header>
-
-  <!-- ============ ABOUT ============ -->
-  <section id="about">
-    <div class="container">
-      <p class="sec-label reveal">01 — about</p>
-      <h2 class="sec-title reveal">From flight lines to fiber lines</h2>
-      <div class="about-grid reveal">
-        <div class="headshot-wrap">
-          <img src="headshot.jpg" alt="Kenneth Schaefer" onerror="this.parentElement.style.display='none'" />
-        </div>
-        <div class="about-text glass" style="padding: 1.6rem 1.8rem;">
-          <p>
-            I'm a lifelong learner with a strong passion for technology. I served over
-            <strong>seven years in the U.S. Marine Corps</strong>, leading aviation maintenance
-            on F/A-18 and F-35 jets while holding a top-secret clearance — earning two Navy and
-            Marine Corps Achievement Medals along the way.
-          </p>
-          <p>
-            After the military, I managed commercial construction sites while pursuing an
-            engineering degree, where I discovered programming and taught myself
-            <strong>C/C++, Python, HTML, and CSS</strong> — then formalized it with full-stack
-            software engineering training.
-          </p>
-          <p>
-            Today I'm a <strong>Network Engineer at Citigroup</strong>, focused on change
-            management and network automation across global infrastructure. Current focus:
-            network security and deeper automation.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PROJECTS ============ -->
-  <section id="projects">
-    <div class="container">
-      <p class="sec-label reveal">02 — projects</p>
-      <h2 class="sec-title reveal">Selected work</h2>
-      <div class="proj-grid">
-
-        <article class="proj glass reveal">
-          <div class="thumb"><img src="hellokitchen.webp" alt="Hello Kitchen app preview" onerror="this.remove()" /></div>
-          <div class="body">
-            <h3>Hello Kitchen</h3>
-            <p>Meal planning &amp; ingredient purchasing with Amazon Fresh integration.</p>
-            <div class="tags">
-              <span class="tag">React</span><span class="tag">Redux</span><span class="tag">Sequelize</span>
-              <a class="tag link" href="https://github.com/Team-Rowlf/Rowlf" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> repo</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="proj glass reveal">
-          <div class="thumb"><img src="graceadopter.webp" alt="Grace Adopter site preview" onerror="this.remove()" /></div>
-          <div class="body">
-            <h3>Grace Adopter</h3>
-            <p>Mock pet-adoption platform built to showcase team development workflows.</p>
-            <div class="tags">
-              <span class="tag">React</span><span class="tag">PostgreSQL</span>
-              <a class="tag link" href="https://github.com/team-johnny-bravo/grace-adopter" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> repo</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="proj glass reveal">
-          <div class="thumb"><img src="automation.webp" alt="Python web automation tool concept" onerror="this.remove()" /></div>
-          <div class="body">
-            <h3>Python Web Automation</h3>
-            <p>Executive tooling for auto-login and report generation. Internal-only due to sensitive data.</p>
-            <div class="tags">
-              <span class="tag">Python</span><span class="tag">Automation</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="proj glass reveal">
-          <div class="thumb"><img src="wfss.webp" alt="WF Self Storage SPA preview" onerror="this.remove()" /></div>
-          <div class="body">
-            <h3>WF Self Storage</h3>
-            <p>Client-facing full-stack SPA tailored to business needs; deployed for live use.</p>
-            <div class="tags">
-              <span class="tag">React</span><span class="tag">PostgreSQL</span>
-              <a class="tag link" href="https://wfss-website.herokuapp.com/" target="_blank" rel="noopener"><i class="fa-solid fa-globe"></i> live</a>
-            </div>
-          </div>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ EXPERIENCE ============ -->
-  <section id="experience">
-    <div class="container">
-      <p class="sec-label reveal">03 — experience</p>
-      <h2 class="sec-title reveal">Where I've been</h2>
-      <div class="timeline">
-
-        <div class="job glass reveal">
-          <h3>Citi — <span>Enterprise Operations &amp; Technology Analyst</span></h3>
-          <p class="date">2023.06 — PRESENT</p>
-          <ul>
-            <li>Collaborate with 100+ global IT support teams via ServiceNow to detect, document, and resolve persistent network issues.</li>
-            <li>Engineered web-based automation tools for global deployment, cutting daily analyst workload by 5%+.</li>
-            <li>Provide technical support across Citi's global network infrastructure.</li>
-          </ul>
-        </div>
-
-        <div class="job glass reveal">
-          <h3>edX — <span>Full-Stack Bootcamp Instructor</span></h3>
-          <p class="date">2023.02 — PRESENT</p>
-          <ul>
-            <li>Mentor students through full-stack projects with personalized feedback.</li>
-            <li>Lead sessions of up to 60 participants covering frontend, backend, databases, and deployment.</li>
-          </ul>
-        </div>
-
-        <div class="job glass reveal">
-          <h3>Donald Jones Consulting — <span>General Manager / IT Consultant</span></h3>
-          <p class="date">2021.09 — 2023.06</p>
-          <ul>
-            <li>Built Python automation software, reducing paperwork by 45%.</li>
-            <li>Increased efficiency by 32% and facility usage by 200% via full-stack solutions and strategic planning.</li>
-          </ul>
-        </div>
-
-        <div class="job glass reveal">
-          <h3>Trinity Executive Services — <span>Hospital Security Officer</span></h3>
-          <p class="date">2020.02 — 2020.11</p>
-          <ul>
-            <li>Implemented HIPAA and Joint Commission-compliant security protocols.</li>
-            <li>Reduced altercations by 28% through de-escalation during the pandemic.</li>
-          </ul>
-        </div>
-
-        <div class="job glass reveal">
-          <h3>G3 Construction — <span>Lead Commercial Foreman</span></h3>
-          <p class="date">2018.01 — 2020.01</p>
-          <ul>
-            <li>Directed staffing, scheduling, and task management for commercial builds across multiple sites.</li>
-            <li>Negotiated contracts and ensured regulatory compliance.</li>
-          </ul>
-        </div>
-
-        <div class="job glass reveal">
-          <h3>United States Marine Corps — <span>Sergeant / Division Lead</span></h3>
-          <p class="date">2010.12 — 2018.01</p>
-          <ul>
-            <li>Led maintenance teams of up to 60 Marines on F/A-18 and F-35 aircraft.</li>
-            <li>Awarded two Navy/Marine Corps Achievement Medals for leadership.</li>
-            <li>Partnered with engineers on complex aircraft issues; trained maintenance staff.</li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ EDUCATION ============ -->
-  <section id="education">
-    <div class="container">
-      <p class="sec-label reveal">04 — education</p>
-      <h2 class="sec-title reveal">Degrees &amp; certifications</h2>
-      <div class="edu-grid">
-        <div class="edu glass reveal">
-          <h3>Formal training</h3>
-          <ul>
-            <li><strong>B.S. Network Engineering &amp; Security</strong> — Western Governors University, 2026</li>
-            <li><strong>A.S. Engineering</strong> — Embry-Riddle Aeronautical University, 2023</li>
-            <li><strong>Full-Stack Software Engineering</strong> — Fullstack Academy, 2022</li>
-          </ul>
-        </div>
-        <div class="edu glass reveal">
-          <h3>Certifications</h3>
-          <ul>
-            <li><strong>Linux Essentials</strong> — LPI, 2024</li>
-            <li><strong>ITILv4</strong> — Axelos, 2024</li>
-            <li><strong>CompTIA A+</strong> — 2024</li>
-            <li><strong>CompTIA ITF+</strong> — 2023</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ CONTACT ============ -->
-  <section id="contact">
-    <div class="container">
-      <p class="sec-label reveal">05 — contact</p>
-      <h2 class="sec-title reveal">Get in touch</h2>
-      <div class="contact-card glass reveal">
-        <p>Open to roles in network engineering, automation, and full-stack development.</p>
-        <div class="contact-icons">
-          <a href="tel:+13173612543" class="cicon" aria-label="Call Kenneth"><i class="fas fa-phone-alt"></i></a>
-          <a href="mailto:parzidog@icloud.com" class="cicon" aria-label="Email Kenneth"><i class="fas fa-envelope"></i></a>
-          <a href="https://github.com/parzidog" class="cicon" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="https://linkedin.com/in/parzidog" class="cicon" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <p>© 2026 KENNETH SCHAEFER</p>
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-(function () {
-  'use strict';
-
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ---------- Scroll progress + reveals ---------- */
-  var progress = document.getElementById('progress');
-  window.addEventListener('scroll', function () {
-    var h = document.documentElement;
-    var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
-    progress.style.width = (pct * 100) + '%';
-  }, { passive: true });
-
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
-
-  /* ---------- Card tilt (pointer devices only) ---------- */
-  if (window.matchMedia('(hover: hover)').matches && !reduceMotion) {
-    document.querySelectorAll('.proj').forEach(function (card) {
-      card.addEventListener('mousemove', function (e) {
-        var r = card.getBoundingClientRect();
-        var x = (e.clientX - r.left) / r.width - 0.5;
-        var y = (e.clientY - r.top) / r.height - 0.5;
-        card.style.transform =
-          'perspective(900px) rotateY(' + (x * 7) + 'deg) rotateX(' + (-y * 7) + 'deg) translateY(-4px)';
-      });
-      card.addEventListener('mouseleave', function () {
-        card.style.transform = '';
-      });
-    });
-  }
-
-  /* ---------- Three.js network constellation ---------- */
-  if (reduceMotion || !window.THREE) return;
-
-  var canvas = document.getElementById('bg3d');
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x060310, 0.035);
-
-  var camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
-  camera.position.set(0, 0, 16);
-
-  /* Drifting nodes (network topology metaphor) */
-  var NODE_COUNT = 140;
-  var SPREAD = 26;
-  var LINK_DIST = 4.2;
-
-  var positions = new Float32Array(NODE_COUNT * 3);
-  var velocities = [];
-  for (var i = 0; i < NODE_COUNT; i++) {
-    positions[i * 3]     = (Math.random() - 0.5) * SPREAD;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * SPREAD * 0.6;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * SPREAD * 0.5;
-    velocities.push(new THREE.Vector3(
-      (Math.random() - 0.5) * 0.014,
-      (Math.random() - 0.5) * 0.014,
-      (Math.random() - 0.5) * 0.014
-    ));
-  }
-
-  var nodeGeo = new THREE.BufferGeometry();
-  nodeGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  var nodes = new THREE.Points(nodeGeo, new THREE.PointsMaterial({
-    color: 0xb47aff,
-    size: 0.14,
-    transparent: true,
-    opacity: 0.9,
-    sizeAttenuation: true
-  }));
-  scene.add(nodes);
-
-  /* Link lines rebuilt each frame between nearby nodes */
-  var maxLinks = NODE_COUNT * 6;
-  var linkPositions = new Float32Array(maxLinks * 6);
-  var linkGeo = new THREE.BufferGeometry();
-  linkGeo.setAttribute('position', new THREE.BufferAttribute(linkPositions, 3));
-  var links = new THREE.LineSegments(linkGeo, new THREE.LineBasicMaterial({
-    color: 0x8b5cf6,
-    transparent: true,
-    opacity: 0.22
-  }));
-  scene.add(links);
-
-  /* Signature centerpiece: glowing wireframe icosahedron */
-  var core = new THREE.Group();
-  var icoOuter = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(3.2, 1),
-    new THREE.MeshBasicMaterial({ color: 0x8b5cf6, wireframe: true, transparent: true, opacity: 0.35 })
-  );
-  var icoInner = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.9, 0),
-    new THREE.MeshBasicMaterial({ color: 0xd946ef, wireframe: true, transparent: true, opacity: 0.5 })
-  );
-  core.add(icoOuter, icoInner);
-  scene.add(core);
-
-  /* Mouse parallax */
-  var mouseX = 0, mouseY = 0;
-  window.addEventListener('mousemove', function (e) {
-    mouseX = (e.clientX / window.innerWidth - 0.5);
-    mouseY = (e.clientY / window.innerHeight - 0.5);
-  }, { passive: true });
-
-  function resize() {
-    var w = window.innerWidth, h = window.innerHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  var clock = new THREE.Clock();
-
-  function animate() {
-    requestAnimationFrame(animate);
-    var t = clock.getElapsedTime();
-
-    /* Drift nodes, bounce at bounds */
-    var p = nodeGeo.attributes.position.array;
-    for (var i = 0; i < NODE_COUNT; i++) {
-      var ix = i * 3;
-      p[ix] += velocities[i].x;
-      p[ix + 1] += velocities[i].y;
-      p[ix + 2] += velocities[i].z;
-      if (Math.abs(p[ix]) > SPREAD / 2) velocities[i].x *= -1;
-      if (Math.abs(p[ix + 1]) > SPREAD * 0.3) velocities[i].y *= -1;
-      if (Math.abs(p[ix + 2]) > SPREAD * 0.25) velocities[i].z *= -1;
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+  <title>Kenneth Schaefer — Network Automation Engineer</title>
+  <meta
+    name="description"
+    content="Kenneth Schaefer is a network automation engineer building software that improves enterprise network operations, infrastructure reliability, and engineering efficiency."
+  />
+  <meta name="author" content="Kenneth Schaefer" />
+  <meta
+    name="keywords"
+    content="Kenneth Schaefer, network automation engineer, network engineer, infrastructure engineer, Python automation, Linux, Docker, FastAPI, React"
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Kenneth Schaefer — Network Automation Engineer" />
+  <meta
+    property="og:description"
+    content="Network automation, infrastructure engineering, enterprise operations, and software development."
+  />
+  <meta property="og:url" content="https://parzidog.com/" />
+  <link rel="canonical" href="https://parzidog.com/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <style>
+    /* ============ Tokens ============ */
+    :root {
+      --void: #060310;
+      --ink: #0e0820;
+      --line: rgba(180, 122, 255, 0.14);
+      --violet: #8b5cf6;
+      --electric: #b47aff;
+      --magenta: #d946ef;
+      --green: #34d399;
+      --text: #ece7fa;
+      --muted: #9a8fc0;
+      --glass: rgba(20, 12, 42, 0.55);
+      --radius: 16px;
+      --container: 1100px;
+      --font-display: "Unbounded", sans-serif;
+      --font-body: "Sora", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
     }
-    nodeGeo.attributes.position.needsUpdate = true;
-
-    /* Rebuild proximity links */
-    var lp = linkGeo.attributes.position.array;
-    var count = 0;
-    for (var a = 0; a < NODE_COUNT && count < maxLinks; a++) {
-      for (var b = a + 1; b < NODE_COUNT && count < maxLinks; b++) {
-        var dx = p[a * 3] - p[b * 3];
-        var dy = p[a * 3 + 1] - p[b * 3 + 1];
-        var dz = p[a * 3 + 2] - p[b * 3 + 2];
-        if (dx * dx + dy * dy + dz * dz < LINK_DIST * LINK_DIST) {
-          var o = count * 6;
-          lp[o] = p[a * 3];     lp[o + 1] = p[a * 3 + 1]; lp[o + 2] = p[a * 3 + 2];
-          lp[o + 3] = p[b * 3]; lp[o + 4] = p[b * 3 + 1]; lp[o + 5] = p[b * 3 + 2];
-          count++;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      min-width: 320px;
+      background: var(--void);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    img {
+      max-width: 100%;
+    }
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+    #bg3d {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      display: block;
+    }
+    .veil {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(
+          120% 90% at 50% 0%,
+          transparent 40%,
+          rgba(6, 3, 16, 0.85) 100%
+        ),
+        linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(6, 3, 16, 0.35) 100%
+        );
+    }
+    main,
+    nav,
+    footer {
+      position: relative;
+      z-index: 2;
+    }
+    .container {
+      width: min(100% - 2.5rem, var(--container));
+      margin-inline: auto;
+    }
+    ::selection {
+      background: rgba(139, 92, 246, 0.4);
+    }
+    a {
+      color: var(--electric);
+      text-decoration: none;
+    }
+    :where(a, button):focus-visible {
+      outline: 2px solid var(--electric);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+    /* ============ Scroll progress ============ */
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 200;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        var(--violet),
+        var(--magenta)
+      );
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.8);
+    }
+    /* ============ Navigation ============ */
+    nav {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--line);
+      background: rgba(6, 3, 16, 0.6);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+    }
+    nav .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+      padding: 0.8rem 0;
+    }
+    .brand {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text);
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .brand .prompt {
+      color: var(--electric);
+    }
+    .brand .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.05em;
+      margin-left: 2px;
+      background: var(--electric);
+      vertical-align: text-bottom;
+      animation: blink 1.1s steps(1) infinite;
+    }
+    @keyframes blink {
+      50% {
+        opacity: 0;
       }
     }
-    linkGeo.setDrawRange(0, count * 2);
-    linkGeo.attributes.position.needsUpdate = true;
-
-    /* Core rotation + breathing */
-    core.rotation.y = t * 0.15;
-    core.rotation.x = t * 0.07;
-    icoInner.rotation.y = -t * 0.3;
-    var s = 1 + Math.sin(t * 0.8) * 0.04;
-    core.scale.set(s, s, s);
-
-    /* Parallax + scroll: camera eases toward mouse, core recedes as you scroll */
-    camera.position.x += (mouseX * 3 - camera.position.x) * 0.03;
-    camera.position.y += (-mouseY * 2 - camera.position.y) * 0.03;
-    camera.lookAt(scene.position);
-
-    var scrollPct = document.documentElement.scrollTop /
-      Math.max(1, document.documentElement.scrollHeight - document.documentElement.clientHeight);
-    core.position.z = -scrollPct * 14;
-    var fade = Math.max(0.1, 1 - scrollPct * 1.4);
-    icoOuter.material.opacity = 0.35 * fade;
-    icoInner.material.opacity = 0.5 * fade;
-
-    renderer.render(scene, camera);
-  }
-  animate();
-})();
-</script>
+    nav ul {
+      display: flex;
+      gap: 1.35rem;
+      align-items: center;
+      padding: 0;
+      list-style: none;
+    }
+    nav ul a {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      transition: color 0.2s ease;
+    }
+    nav ul a:hover {
+      color: var(--electric);
+    }
+    @media (max-width: 860px) {
+      nav ul {
+        display: none;
+      }
+    }
+    /* ============ Hero ============ */
+    .hero {
+      display: grid;
+      min-height: 100svh;
+      place-content: center;
+      padding: 7rem 0 4rem;
+      text-align: center;
+    }
+    .hero .status {
+      margin-bottom: 1.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--electric);
+      letter-spacing: 0.12em;
+    }
+    .hero .status::before {
+      content: "● ";
+      color: var(--green);
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.45rem, 7vw, 4.8rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      color: transparent;
+      background: linear-gradient(
+        120deg,
+        #f3edff 20%,
+        var(--electric) 55%,
+        var(--magenta) 90%
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+    .hero .role {
+      max-width: 58ch;
+      margin: 1.35rem auto 0;
+      color: var(--muted);
+      font-size: clamp(0.98rem, 2vw, 1.16rem);
+    }
+    .hero .role strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .hero-support {
+      max-width: 70ch;
+      margin: 1rem auto 0;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: rgba(180, 122, 255, 0.86);
+      letter-spacing: 0.04em;
+    }
+    .hero .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2.4rem;
+    }
+    .btn {
+      display: inline-flex;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.4rem;
+      border: 1px solid rgba(180, 122, 255, 0.35);
+      border-radius: 10px;
+      background: rgba(139, 92, 246, 0.12);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+      transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      background: rgba(139, 92, 246, 0.28);
+      box-shadow: 0 8px 30px rgba(139, 92, 246, 0.35);
+    }
+    .btn.solid {
+      border-color: transparent;
+      background: linear-gradient(
+        120deg,
+        var(--violet),
+        #6d28d9
+      );
+    }
+    .scroll-hint {
+      margin-top: 4rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      animation: drift 2.4s ease-in-out infinite;
+    }
+    @keyframes drift {
+      50% {
+        transform: translateY(6px);
+      }
+    }
+    /* ============ Metrics ============ */
+    .metrics-wrap {
+      margin-top: -3rem;
+      padding-bottom: 3rem;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      overflow: hidden;
+    }
+    .metric {
+      min-width: 0;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      border-right: 1px solid var(--line);
+    }
+    .metric:last-child {
+      border-right: none;
+    }
+    .metric strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      color: var(--electric);
+      line-height: 1.2;
+    }
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    @media (max-width: 760px) {
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .metric:nth-child(2) {
+        border-right: none;
+      }
+      .metric:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--line);
+      }
+    }
+    /* ============ Sections ============ */
+    section {
+      padding: 6rem 0;
+      scroll-margin-top: 90px;
+    }
+    .sec-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--electric);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .sec-title {
+      margin: 0.5rem 0 2.2rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3.4vw, 2.2rem);
+      font-weight: 600;
+    }
+    .section-intro {
+      max-width: 68ch;
+      margin: -1.2rem 0 2.4rem;
+      color: var(--muted);
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity 0.7s ease,
+        transform 0.7s ease;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+    /* ============ Glass surfaces ============ */
+    .glass {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    /* ============ About ============ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    .headshot-wrap {
+      position: relative;
+      padding: 3px;
+      border-radius: var(--radius);
+      background: linear-gradient(
+        140deg,
+        var(--violet),
+        transparent 60%,
+        var(--magenta)
+      );
+    }
+    .headshot-wrap img {
+      display: block;
+      width: 100%;
+      border-radius: 14px;
+      filter: saturate(0.9);
+    }
+    .about-text {
+      padding: 1.6rem 1.8rem;
+    }
+    .about-text p {
+      margin-bottom: 1rem;
+      color: var(--muted);
+    }
+    .about-text p:last-child {
+      margin-bottom: 0;
+    }
+    .about-text p strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+    @media (max-width: 720px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .headshot-wrap {
+        width: min(240px, 100%);
+        margin-inline: auto;
+      }
+    }
+    /* ============ Projects ============ */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.4rem;
+    }
+    .proj {
+      overflow: hidden;
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    }
+    .proj:hover {
+      border-color: rgba(180, 122, 255, 0.45);
+      box-shadow: 0 20px 50px rgba(109, 40, 217, 0.35);
+    }
+    .proj .thumb {
+      position: relative;
+      display: grid;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      place-items: center;
+      background:
+        radial-gradient(
+          80% 120% at 20% 0%,
+          rgba(139, 92, 246, 0.5),
+          transparent 60%
+        ),
+        radial-gradient(
+          80% 120% at 90% 100%,
+          rgba(217, 70, 239, 0.35),
+          transparent 60%
+        ),
+        #120a28;
+    }
+    .proj .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .thumb-fallback {
+      display: grid;
+      gap: 0.8rem;
+      place-items: center;
+      color: var(--electric);
+      text-align: center;
+    }
+    .thumb-fallback i {
+      font-size: 3rem;
+      opacity: 0.8;
+    }
+    .thumb-fallback span {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .proj .body {
+      padding: 1.3rem 1.35rem 1.5rem;
+    }
+    .proj h3 {
+      margin-bottom: 0.55rem;
+      font-family: var(--font-display);
+      font-size: 1.02rem;
+      font-weight: 600;
+    }
+    .proj p {
+      margin-bottom: 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .project-outcome {
+      margin-top: -0.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem !important;
+      color: rgba(236, 231, 250, 0.84) !important;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .tag {
+      padding: 0.28rem 0.6rem;
+      border: 1px solid rgba(180, 122, 255, 0.3);
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.08);
+      color: var(--electric);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+    }
+    .tag.link {
+      transition: background 0.2s ease;
+    }
+    .tag.link:hover {
+      background: rgba(139, 92, 246, 0.25);
+    }
+    @media (max-width: 760px) {
+      .proj-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    /* ============ Capabilities ============ */
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.4rem;
+    }
+    .capability {
+      padding: 1.45rem 1.55rem;
+    }
+    .capability .cap-icon {
+      display: grid;
+      width: 46px;
+      height: 46px;
+      margin-bottom: 1rem;
+      place-items: center;
+      border: 1px solid rgba(180, 122, 255, 0.3);
+      border-radius: 12px;
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--electric);
+    }
+    .capability h3 {
+      margin-bottom: 0.8rem;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .capability ul {
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .capability li {
+      margin: 0.4rem 0;
+    }
+    @media (max-width: 720px) {
+      .cap-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    /* ============ Experience ============ */
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 1.4rem;
+      padding-left: 1.6rem;
+    }
+    .timeline::before {
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 5px;
+      width: 1px;
+      content: "";
+      background: linear-gradient(
+        180deg,
+        var(--violet),
+        rgba(139, 92, 246, 0.05)
+      );
+    }
+    .job {
+      position: relative;
+      padding: 1.3rem 1.45rem;
+    }
+    .job::before {
+      position: absolute;
+      top: 1.55rem;
+      left: -1.6rem;
+      width: 11px;
+      height: 11px;
+      content: "";
+      border: 2px solid var(--violet);
+      border-radius: 50%;
+      background: var(--void);
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+      transform: translateX(-4px);
+    }
+    .job h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .job h3 span {
+      color: var(--electric);
+      font-weight: 400;
+    }
+    .job .date {
+      margin: 0.25rem 0 0.75rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+    }
+    .job ul {
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .job li {
+      margin: 0.4rem 0;
+    }
+    /* ============ Education ============ */
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+    }
+    .edu {
+      padding: 1.4rem 1.5rem;
+    }
+    .edu h3 {
+      margin-bottom: 0.9rem;
+      color: var(--electric);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .edu ul {
+      padding: 0;
+      list-style: none;
+    }
+    .edu li {
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .edu li:last-child {
+      border-bottom: none;
+    }
+    .edu li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .study-note {
+      margin-top: 1.4rem;
+      padding: 1.1rem 1.3rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .study-note strong {
+      color: var(--text);
+    }
+    @media (max-width: 720px) {
+      .edu-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    /* ============ Contact ============ */
+    .contact-card {
+      padding: 3.5rem 2rem;
+      text-align: center;
+    }
+    .contact-card p {
+      max-width: 58ch;
+      margin: 0 auto 1.8rem;
+      color: var(--muted);
+    }
+    .contact-icons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .cicon {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      border: 1px solid rgba(180, 122, 255, 0.3);
+      border-radius: 14px;
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--text);
+      font-size: 1.15rem;
+      transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+    .cicon:hover {
+      transform: translateY(-3px);
+      background: linear-gradient(
+        120deg,
+        var(--violet),
+        #6d28d9
+      );
+      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+    }
+    /* ============ Footer ============ */
+    footer {
+      padding: 2rem 0 3rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+    /* ============ Mobile adjustments ============ */
+    @media (max-width: 540px) {
+      .container {
+        width: min(100% - 1.5rem, var(--container));
+      }
+      .brand {
+        font-size: 0.72rem;
+      }
+      .hero {
+        padding-top: 6.5rem;
+      }
+      .hero .status {
+        font-size: 0.64rem;
+        line-height: 1.6;
+      }
+      .hero-support {
+        font-size: 0.66rem;
+      }
+      .btn {
+        width: 100%;
+        max-width: 270px;
+      }
+      section {
+        padding: 4.5rem 0;
+      }
+      .about-text,
+      .capability,
+      .job,
+      .edu {
+        padding-right: 1.2rem;
+        padding-left: 1.2rem;
+      }
+      .contact-card {
+        padding: 2.5rem 1.2rem;
+      }
+    }
+    /* ============ Reduced motion ============ */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+      #bg3d {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg3d" aria-hidden="true"></canvas>
+  <div class="veil" aria-hidden="true"></div>
+  <div id="progress" aria-hidden="true"></div>
+  <nav aria-label="Primary navigation">
+    <div class="container row">
+      <a href="#top" class="brand">
+        <span class="prompt">kschaefer@net:~$</span>
+        whoami
+        <span class="cursor" aria-hidden="true"></span>
+      </a>
+      <ul>
+        <li><a href="#about">/about</a></li>
+        <li><a href="#projects">/projects</a></li>
+        <li><a href="#capabilities">/skills</a></li>
+        <li><a href="#experience">/experience</a></li>
+        <li><a href="#education">/education</a></li>
+        <li><a href="#contact">/contact</a></li>
+      </ul>
+    </div>
+  </nav>
+  <main id="top">
+    <!-- ============ HERO ============ -->
+    <header class="hero container">
+      <p class="status">
+        OPEN TO NETWORK AUTOMATION, PLATFORM &amp; INFRASTRUCTURE ROLES
+      </p>
+      <h1>
+        Kenneth<br />
+        Schaefer
+      </h1>
+      <p class="role">
+        <strong>Network Automation Engineer</strong> building software that
+        improves network operations, reduces repetitive work, and makes
+        infrastructure easier to support.
+      </p>
+      <p class="hero-support">
+        Enterprise networking · Python automation · Full-stack tooling ·
+        Linux infrastructure
+      </p>
+      <div class="cta">
+        <a class="btn solid" href="#projects">
+          <i class="fa-solid fa-cube" aria-hidden="true"></i>
+          view work
+        </a>
+        <a
+          class="btn"
+          href="resume.pdf"
+          target="_blank"
+          rel="noopener"
+        >
+          <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i>
+          resume.pdf
+        </a>
+      </div>
+      <p class="scroll-hint">▼ SCROLL</p>
+    </header>
+    <!-- ============ METRICS ============ -->
+    <div class="metrics-wrap">
+      <div class="container">
+        <div class="metrics glass reveal">
+          <div class="metric">
+            <strong>100+</strong>
+            <span>global teams supported</span>
+          </div>
+          <div class="metric">
+            <strong>5%+</strong>
+            <span>analyst workload reduced</span>
+          </div>
+          <div class="metric">
+            <strong>60</strong>
+            <span>students led per cohort</span>
+          </div>
+          <div class="metric">
+            <strong>7 years</strong>
+            <span>military leadership</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ============ ABOUT ============ -->
+    <section id="about">
+      <div class="container">
+        <p class="sec-label reveal">01 — about</p>
+        <h2 class="sec-title reveal">
+          Engineering networks through software
+        </h2>
+        <div class="about-grid reveal">
+          <div class="headshot-wrap">
+            <img
+              src="headshot.jpg"
+              alt="Kenneth Schaefer"
+              onerror="this.parentElement.style.display='none'"
+            />
+          </div>
+          <div class="about-text glass">
+            <p>
+              I am a <strong>network automation engineer</strong> with
+              experience across enterprise infrastructure, software
+              development, and technical operations. At Citi, I support global
+              network environments and build automation tools that reduce
+              manual effort, improve operational visibility, and help teams
+              resolve recurring infrastructure problems.
+            </p>
+            <p>
+              My engineering background includes
+              <strong>
+                Python, JavaScript, React, FastAPI, Bash, Linux, Docker, APIs,
+                databases, and network technologies
+              </strong>.
+              Outside of work, I design and operate a self-hosted environment
+              that includes identity management, cloud connectivity,
+              containerized applications, monitoring, storage, and automated
+              backups.
+            </p>
+            <p>
+              Before entering technology, I served more than seven years in the
+              <strong>United States Marine Corps</strong>, where I led aviation
+              maintenance teams supporting F/A-18 and F-35 aircraft. That
+              experience shaped how I approach engineering today: understand
+              the system, document the risk, build repeatable processes, and
+              remain accountable for the result.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ============ PROJECTS ============ -->
+    <section id="projects">
+      <div class="container">
+        <p class="sec-label reveal">02 — projects</p>
+        <h2 class="sec-title reveal">Selected engineering work</h2>
+        <p class="section-intro reveal">
+          Projects spanning enterprise automation, network monitoring,
+          identity management, self-hosted infrastructure, and application
+          development.
+        </p>
+        <div class="proj-grid">
+          <!-- CerberNet -->
+          <article class="proj glass reveal">
+            <div class="thumb">
+              <img
+                src="cerbernet.webp"
+                alt="CerberNet network monitoring dashboard"
+                onerror="this.remove()"
+              />
+              <div class="thumb-fallback">
+                <i
+                  class="fa-solid fa-diagram-project"
+                  aria-hidden="true"
+                ></i>
+                <span>CerberNet</span>
+              </div>
+            </div>
+            <div class="body">
+              <h3>CerberNet</h3>
+              <p>
+                A self-hosted network monitoring platform that discovers local
+                devices, tests gateway reachability, runs internet speed tests,
+                records performance history, and exposes network data through
+                a FastAPI backend.
+              </p>
+              <p class="project-outcome">
+                Built to turn common network checks into a repeatable,
+                browser-based operational workflow.
+              </p>
+              <div class="tags">
+                <span class="tag">FastAPI</span>
+                <span class="tag">React</span>
+                <span class="tag">Python</span>
+                <span class="tag">Docker</span>
+                <span class="tag">Network Monitoring</span>
+              </div>
+            </div>
+          </article>
+          <!-- Enterprise automation -->
+          <article class="proj glass reveal">
+            <div class="thumb">
+              <img
+                src="automation.webp"
+                alt="Enterprise network operations automation concept"
+                onerror="this.remove()"
+              />
+              <div class="thumb-fallback">
+                <i class="fa-solid fa-gears" aria-hidden="true"></i>
+                <span>Enterprise Automation</span>
+              </div>
+            </div>
+            <div class="body">
+              <h3>Enterprise Operations Automation</h3>
+              <p>
+                Internal web tooling that automates authentication, data
+                collection, and operational reporting across enterprise
+                support workflows. Implementation details remain private
+                because the software interacts with sensitive infrastructure
+                systems.
+              </p>
+              <p class="project-outcome">
+                Reduced repetitive analyst work by more than 5% while
+                supporting deployment across global operations teams.
+              </p>
+              <div class="tags">
+                <span class="tag">Python</span>
+                <span class="tag">Web Automation</span>
+                <span class="tag">APIs</span>
+                <span class="tag">Enterprise Operations</span>
+              </div>
+            </div>
+          </article>
+          <!-- Self-hosted infrastructure -->
+          <article class="proj glass reveal">
+            <div class="thumb">
+              <img
+                src="infrastructure.webp"
+                alt="Self-hosted infrastructure architecture"
+                onerror="this.remove()"
+              />
+              <div class="thumb-fallback">
+                <i class="fa-solid fa-server" aria-hidden="true"></i>
+                <span>Infrastructure Platform</span>
+              </div>
+            </div>
+            <div class="body">
+              <h3>Self-Hosted Infrastructure Platform</h3>
+              <p>
+                A containerized Linux environment with centralized identity,
+                LDAP and OIDC authentication, Cloudflare connectivity,
+                private storage, application hosting, segmented Docker
+                networking, backups, and operational monitoring.
+              </p>
+              <p class="project-outcome">
+                Provides secure access and shared authentication across a
+                growing collection of independently deployed services.
+              </p>
+              <div class="tags">
+                <span class="tag">Docker</span>
+                <span class="tag">Linux</span>
+                <span class="tag">Authentik</span>
+                <span class="tag">Cloudflare</span>
+                <span class="tag">OIDC</span>
+                <span class="tag">LDAP</span>
+              </div>
+            </div>
+          </article>
+          <!-- Breaking Bread -->
+          <article class="proj glass reveal">
+            <div class="thumb">
+              <img
+                src="breaking-bread.webp"
+                alt="Breaking Bread mobile application"
+                onerror="this.remove()"
+              />
+              <div class="thumb-fallback">
+                <i class="fa-solid fa-users" aria-hidden="true"></i>
+                <span>Breaking Bread</span>
+              </div>
+            </div>
+            <div class="body">
+              <h3>Breaking Bread</h3>
+              <p>
+                A mobile application for coordinating recurring small-group
+                dinners, including user authentication, household
+                relationships, participant categories, administrative
+                controls, and randomized group assignments.
+              </p>
+              <p class="project-outcome">
+                Designed to replace manual participant tracking and group
+                creation for a recurring community program.
+              </p>
+              <div class="tags">
+                <span class="tag">React Native</span>
+                <span class="tag">Expo</span>
+                <span class="tag">Supabase</span>
+                <span class="tag">PostgreSQL</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <!-- ============ CAPABILITIES ============ -->
+    <section id="capabilities">
+      <div class="container">
+        <p class="sec-label reveal">03 — capabilities</p>
+        <h2 class="sec-title reveal">Technical capabilities</h2>
+        <div class="cap-grid">
+          <article class="capability glass reveal">
+            <div class="cap-icon">
+              <i class="fa-solid fa-network-wired" aria-hidden="true"></i>
+            </div>
+            <h3>Network engineering</h3>
+            <ul>
+              <li>TCP/IP, DNS, DHCP, routing, switching, and VPNs</li>
+              <li>Network incident investigation and change management</li>
+              <li>Enterprise support coordination and technical documentation</li>
+              <li>Network discovery, connectivity testing, and troubleshooting</li>
+            </ul>
+          </article>
+          <article class="capability glass reveal">
+            <div class="cap-icon">
+              <i class="fa-solid fa-code" aria-hidden="true"></i>
+            </div>
+            <h3>Automation and development</h3>
+            <ul>
+              <li>Python, Bash, PowerShell, and JavaScript</li>
+              <li>React, React Native, FastAPI, and Node.js</li>
+              <li>REST APIs, PostgreSQL, Supabase, and Git</li>
+              <li>Workflow automation and internal operational tooling</li>
+            </ul>
+          </article>
+          <article class="capability glass reveal">
+            <div class="cap-icon">
+              <i class="fa-brands fa-linux" aria-hidden="true"></i>
+            </div>
+            <h3>Infrastructure and platforms</h3>
+            <ul>
+              <li>Linux administration and system troubleshooting</li>
+              <li>Docker, Docker Compose, and container networking</li>
+              <li>Cloudflare Tunnel, reverse proxies, and secure access</li>
+              <li>Backups, service health checks, and operational maintenance</li>
+            </ul>
+          </article>
+          <article class="capability glass reveal">
+            <div class="cap-icon">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+            </div>
+            <h3>Identity and security</h3>
+            <ul>
+              <li>Authentik identity-provider administration</li>
+              <li>OIDC, OAuth, LDAP, SSO, and passkey authentication</li>
+              <li>Access controls, private service exposure, and segmentation</li>
+              <li>Security-focused configuration and risk documentation</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+    <!-- ============ EXPERIENCE ============ -->
+    <section id="experience">
+      <div class="container">
+        <p class="sec-label reveal">04 — experience</p>
+        <h2 class="sec-title reveal">Engineering experience</h2>
+        <div class="timeline">
+          <!--
+            Verify your exact official Citi title before publishing.
+          -->
+          <article class="job glass reveal">
+            <h3>
+              Citi —
+              <span>Network Analyst / Automation Developer</span>
+            </h3>
+            <p class="date">2023.06 — PRESENT</p>
+            <ul>
+              <li>
+                Build web-based automation tools that reduce repetitive analyst
+                work and support global network operations.
+              </li>
+              <li>
+                Partner with more than 100 infrastructure and support teams to
+                investigate recurring network incidents, coordinate
+                remediation, and improve operational documentation.
+              </li>
+              <li>
+                Support enterprise network environments through change
+                management, incident analysis, workflow automation, and
+                cross-team technical coordination.
+              </li>
+              <li>
+                Translate operational pain points into maintainable software
+                tools, documented processes, and measurable efficiency
+                improvements.
+              </li>
+            </ul>
+          </article>
+          <!--
+            Verify whether the edX position is still active.
+            Change PRESENT to the correct end date when applicable.
+          -->
+          <article class="job glass reveal">
+            <h3>
+              edX —
+              <span>Full-Stack Software Engineering Instructor</span>
+            </h3>
+            <p class="date">2023.02 — PRESENT</p>
+            <ul>
+              <li>
+                Led technical instruction for groups of up to 60 students
+                across JavaScript, React, Node.js, databases, APIs, testing,
+                and deployment.
+              </li>
+              <li>
+                Reviewed application architecture and code, diagnosed
+                implementation problems, and coached students through
+                production-style team projects.
+              </li>
+              <li>
+                Provided direct technical feedback while adapting instruction
+                to different experience levels and learning needs.
+              </li>
+            </ul>
+          </article>
+          <article class="job glass reveal">
+            <h3>
+              Donald Jones Consulting —
+              <span>General Manager / IT Consultant</span>
+            </h3>
+            <p class="date">2021.09 — 2023.06</p>
+            <ul>
+              <li>
+                Built Python automation software that reduced administrative
+                paperwork by 45%.
+              </li>
+              <li>
+                Developed full-stack tools and operational processes that
+                increased efficiency by 32%.
+              </li>
+              <li>
+                Combined software development, technical support, process
+                design, and business operations to solve client and facility
+                management problems.
+              </li>
+            </ul>
+          </article>
+          <article class="job glass reveal">
+            <h3>
+              United States Marine Corps —
+              <span>Sergeant / Aviation Maintenance Division Lead</span>
+            </h3>
+            <p class="date">2010.12 — 2018.01</p>
+            <ul>
+              <li>
+                Led aviation-maintenance teams of up to 60 Marines supporting
+                F/A-18 and F-35 aircraft.
+              </li>
+              <li>
+                Coordinated troubleshooting, training, quality control, and
+                maintenance execution in safety-critical environments.
+              </li>
+              <li>
+                Partnered with engineers and technical specialists to diagnose
+                complex aircraft issues and implement corrective actions.
+              </li>
+              <li>
+                Received two Navy and Marine Corps Achievement Medals for
+                leadership and operational performance.
+              </li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+    <!-- ============ EDUCATION ============ -->
+    <section id="education">
+      <div class="container">
+        <p class="sec-label reveal">05 — education</p>
+        <h2 class="sec-title reveal">
+          Degrees and certifications
+        </h2>
+        <div class="edu-grid">
+          <article class="edu glass reveal">
+            <h3>Formal training</h3>
+            <ul>
+              <!--
+                Remove "Expected" when the degree has officially been conferred.
+              -->
+              <li>
+                <strong>B.S. Network Engineering &amp; Security</strong>
+                — Western Governors University, Expected 2026
+              </li>
+              <li>
+                <strong>A.S. Engineering</strong>
+                — Embry-Riddle Aeronautical University, 2023
+              </li>
+              <li>
+                <strong>Full-Stack Software Engineering</strong>
+                — Fullstack Academy, 2022
+              </li>
+            </ul>
+          </article>
+          <article class="edu glass reveal">
+            <h3>Certifications</h3>
+            <ul>
+              <!--
+                Keep only active and verifiable certifications.
+              -->
+              <li>
+                <strong>AWS Certified Cloud Practitioner</strong>
+                — Amazon Web Services
+              </li>
+              <li>
+                <strong>CompTIA A+</strong>
+                — CompTIA
+              </li>
+              <li>
+                <strong>ITIL 4 Foundation</strong>
+                — PeopleCert
+              </li>
+              <li>
+                <strong>Linux Essentials</strong>
+                — Linux Professional Institute
+              </li>
+              <li>
+                <strong>Google IT Support Professional Certificate</strong>
+                — Google
+              </li>
+              <li>
+                <strong>CompTIA ITF+</strong>
+                — CompTIA
+              </li>
+            </ul>
+          </article>
+        </div>
+        <div class="study-note glass reveal">
+          <strong>Current development:</strong>
+          continuing deeper study in network automation, infrastructure
+          engineering, network security, and Cisco networking.
+        </div>
+      </div>
+    </section>
+    <!-- ============ CONTACT ============ -->
+    <section id="contact">
+      <div class="container">
+        <p class="sec-label reveal">06 — contact</p>
+        <h2 class="sec-title reveal">Get in touch</h2>
+        <div class="contact-card glass reveal">
+          <p>
+            I am interested in network automation, infrastructure engineering,
+            platform engineering, and technical leadership opportunities where
+            software can improve operational reliability.
+          </p>
+          <div class="contact-icons">
+            <a
+              href="mailto:parzidog@icloud.com"
+              class="cicon"
+              aria-label="Email Kenneth Schaefer"
+              title="Email"
+            >
+              <i class="fas fa-envelope" aria-hidden="true"></i>
+            </a>
+            <a
+              href="https://github.com/parzidog"
+              class="cicon"
+              target="_blank"
+              rel="noopener"
+              aria-label="Kenneth Schaefer on GitHub"
+              title="GitHub"
+            >
+              <i class="fab fa-github" aria-hidden="true"></i>
+            </a>
+            <a
+              href="https://linkedin.com/in/parzidog"
+              class="cicon"
+              target="_blank"
+              rel="noopener"
+              aria-label="Kenneth Schaefer on LinkedIn"
+              title="LinkedIn"
+            >
+              <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+            </a>
+            <a
+              href="resume.pdf"
+              class="cicon"
+              target="_blank"
+              rel="noopener"
+              aria-label="View Kenneth Schaefer's résumé"
+              title="Résumé"
+            >
+              <i class="fas fa-file-lines" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>© <span id="year">2026</span> KENNETH SCHAEFER</p>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      /* ---------- Dynamic footer year ---------- */
+      var year = document.getElementById("year");
+      if (year) {
+        year.textContent = new Date().getFullYear();
+      }
+      /* ---------- Scroll progress ---------- */
+      var progress = document.getElementById("progress");
+      function updateScrollProgress() {
+        if (!progress) {
+          return;
+        }
+        var root = document.documentElement;
+        var scrollableHeight = root.scrollHeight - root.clientHeight;
+        if (scrollableHeight <= 0) {
+          progress.style.width = "0%";
+          return;
+        }
+        var percentage = root.scrollTop / scrollableHeight;
+        progress.style.width =
+          Math.min(100, Math.max(0, percentage * 100)) + "%";
+      }
+      window.addEventListener(
+        "scroll",
+        updateScrollProgress,
+        { passive: true }
+      );
+      updateScrollProgress();
+      /* ---------- Scroll reveals ---------- */
+      var revealElements = document.querySelectorAll(".reveal");
+      if ("IntersectionObserver" in window && !reduceMotion) {
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("in");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.12
+          }
+        );
+        revealElements.forEach(function (element) {
+          observer.observe(element);
+        });
+      } else {
+        revealElements.forEach(function (element) {
+          element.classList.add("in");
+        });
+      }
+      /* ---------- Project-card tilt ---------- */
+      if (
+        window.matchMedia("(hover: hover)").matches &&
+        !reduceMotion
+      ) {
+        document.querySelectorAll(".proj").forEach(function (card) {
+          card.addEventListener("mousemove", function (event) {
+            var rect = card.getBoundingClientRect();
+            var x =
+              (event.clientX - rect.left) / rect.width - 0.5;
+            var y =
+              (event.clientY - rect.top) / rect.height - 0.5;
+            card.style.transform =
+              "perspective(900px) " +
+              "rotateY(" + x * 7 + "deg) " +
+              "rotateX(" + -y * 7 + "deg) " +
+              "translateY(-4px)";
+          });
+          card.addEventListener("mouseleave", function () {
+            card.style.transform = "";
+          });
+        });
+      }
+      /* ---------- Three.js network constellation ---------- */
+      if (reduceMotion || !window.THREE) {
+        return;
+      }
+      var canvas = document.getElementById("bg3d");
+      if (!canvas) {
+        return;
+      }
+      var renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: true,
+          alpha: true
+        });
+      } catch (error) {
+        canvas.style.display = "none";
+        return;
+      }
+      renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio || 1, 2)
+      );
+      var scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(
+        0x060310,
+        0.035
+      );
+      var camera = new THREE.PerspectiveCamera(
+        60,
+        1,
+        0.1,
+        100
+      );
+      camera.position.set(0, 0, 16);
+      /* Drifting network nodes */
+      var NODE_COUNT = 140;
+      var SPREAD = 26;
+      var LINK_DIST = 4.2;
+      var positions = new Float32Array(
+        NODE_COUNT * 3
+      );
+      var velocities = [];
+      for (var i = 0; i < NODE_COUNT; i++) {
+        positions[i * 3] =
+          (Math.random() - 0.5) * SPREAD;
+        positions[i * 3 + 1] =
+          (Math.random() - 0.5) * SPREAD * 0.6;
+        positions[i * 3 + 2] =
+          (Math.random() - 0.5) * SPREAD * 0.5;
+        velocities.push(
+          new THREE.Vector3(
+            (Math.random() - 0.5) * 0.014,
+            (Math.random() - 0.5) * 0.014,
+            (Math.random() - 0.5) * 0.014
+          )
+        );
+      }
+      var nodeGeometry = new THREE.BufferGeometry();
+      nodeGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positions, 3)
+      );
+      var nodeMaterial = new THREE.PointsMaterial({
+        color: 0xb47aff,
+        size: 0.14,
+        transparent: true,
+        opacity: 0.9,
+        sizeAttenuation: true
+      });
+      var nodes = new THREE.Points(
+        nodeGeometry,
+        nodeMaterial
+      );
+      scene.add(nodes);
+      /* Proximity links */
+      var maxLinks = NODE_COUNT * 6;
+      var linkPositions = new Float32Array(
+        maxLinks * 6
+      );
+      var linkGeometry = new THREE.BufferGeometry();
+      linkGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(linkPositions, 3)
+      );
+      var linkMaterial = new THREE.LineBasicMaterial({
+        color: 0x8b5cf6,
+        transparent: true,
+        opacity: 0.22
+      });
+      var links = new THREE.LineSegments(
+        linkGeometry,
+        linkMaterial
+      );
+      scene.add(links);
+      /* Wireframe centerpiece */
+      var core = new THREE.Group();
+      var outerMaterial = new THREE.MeshBasicMaterial({
+        color: 0x8b5cf6,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.35
+      });
+      var innerMaterial = new THREE.MeshBasicMaterial({
+        color: 0xd946ef,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.5
+      });
+      var icoOuter = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(3.2, 1),
+        outerMaterial
+      );
+      var icoInner = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(1.9, 0),
+        innerMaterial
+      );
+      core.add(icoOuter, icoInner);
+      scene.add(core);
+      /* Pointer parallax */
+      var mouseX = 0;
+      var mouseY = 0;
+      window.addEventListener(
+        "mousemove",
+        function (event) {
+          mouseX =
+            event.clientX / window.innerWidth - 0.5;
+          mouseY =
+            event.clientY / window.innerHeight - 0.5;
+        },
+        { passive: true }
+      );
+      function resize() {
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+      window.addEventListener(
+        "resize",
+        resize,
+        { passive: true }
+      );
+      resize();
+      var clock = new THREE.Clock();
+      function animate() {
+        requestAnimationFrame(animate);
+        var elapsed = clock.getElapsedTime();
+        var nodePositions =
+          nodeGeometry.attributes.position.array;
+        /* Move and bounce nodes */
+        for (var i = 0; i < NODE_COUNT; i++) {
+          var positionIndex = i * 3;
+          nodePositions[positionIndex] +=
+            velocities[i].x;
+          nodePositions[positionIndex + 1] +=
+            velocities[i].y;
+          nodePositions[positionIndex + 2] +=
+            velocities[i].z;
+          if (
+            Math.abs(nodePositions[positionIndex]) >
+            SPREAD / 2
+          ) {
+            velocities[i].x *= -1;
+          }
+          if (
+            Math.abs(nodePositions[positionIndex + 1]) >
+            SPREAD * 0.3
+          ) {
+            velocities[i].y *= -1;
+          }
+          if (
+            Math.abs(nodePositions[positionIndex + 2]) >
+            SPREAD * 0.25
+          ) {
+            velocities[i].z *= -1;
+          }
+        }
+        nodeGeometry.attributes.position.needsUpdate =
+          true;
+        /* Rebuild nearby links */
+        var activeLinkPositions =
+          linkGeometry.attributes.position.array;
+        var linkCount = 0;
+        for (
+          var a = 0;
+          a < NODE_COUNT && linkCount < maxLinks;
+          a++
+        ) {
+          for (
+            var b = a + 1;
+            b < NODE_COUNT && linkCount < maxLinks;
+            b++
+          ) {
+            var deltaX =
+              nodePositions[a * 3] -
+              nodePositions[b * 3];
+            var deltaY =
+              nodePositions[a * 3 + 1] -
+              nodePositions[b * 3 + 1];
+            var deltaZ =
+              nodePositions[a * 3 + 2] -
+              nodePositions[b * 3 + 2];
+            var distanceSquared =
+              deltaX * deltaX +
+              deltaY * deltaY +
+              deltaZ * deltaZ;
+            if (
+              distanceSquared <
+              LINK_DIST * LINK_DIST
+            ) {
+              var offset = linkCount * 6;
+              activeLinkPositions[offset] =
+                nodePositions[a * 3];
+              activeLinkPositions[offset + 1] =
+                nodePositions[a * 3 + 1];
+              activeLinkPositions[offset + 2] =
+                nodePositions[a * 3 + 2];
+              activeLinkPositions[offset + 3] =
+                nodePositions[b * 3];
+              activeLinkPositions[offset + 4] =
+                nodePositions[b * 3 + 1];
+              activeLinkPositions[offset + 5] =
+                nodePositions[b * 3 + 2];
+              linkCount++;
+            }
+          }
+        }
+        linkGeometry.setDrawRange(
+          0,
+          linkCount * 2
+        );
+        linkGeometry.attributes.position.needsUpdate =
+          true;
+        /* Rotate and pulse centerpiece */
+        core.rotation.y = elapsed * 0.15;
+        core.rotation.x = elapsed * 0.07;
+        icoInner.rotation.y =
+          -elapsed * 0.3;
+        var scale =
+          1 + Math.sin(elapsed * 0.8) * 0.04;
+        core.scale.set(
+          scale,
+          scale,
+          scale
+        );
+        /* Camera movement */
+        camera.position.x +=
+          (mouseX * 3 - camera.position.x) *
+          0.03;
+        camera.position.y +=
+          (-mouseY * 2 - camera.position.y) *
+          0.03;
+        camera.lookAt(scene.position);
+        /* Recede and fade during scrolling */
+        var root = document.documentElement;
+        var scrollableHeight = Math.max(
+          1,
+          root.scrollHeight - root.clientHeight
+        );
+        var scrollPercentage =
+          root.scrollTop / scrollableHeight;
+        core.position.z =
+          -scrollPercentage * 14;
+        var fade = Math.max(
+          0.1,
+          1 - scrollPercentage * 1.4
+        );
+        outerMaterial.opacity =
+          0.35 * fade;
+        innerMaterial.opacity =
+          0.5 * fade;
+        renderer.render(scene, camera);
+      }
+      animate();
+    })();
+  </script>
 </body>
 </html>
